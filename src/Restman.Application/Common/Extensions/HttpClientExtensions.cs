@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics;
 
-namespace Restman.Winform.Common.Extensions;
+namespace Restman.Application.Common.Extensions;
 
 public static class HttpClientExtensions
 {
     public static async Task<(HttpResponseMessage, TimeSpan)> SendTimedAsync(
         this HttpClient httpClient,
-        HttpRequestMessage request)
+        HttpRequestMessage request,
+        CancellationToken cancellationToken = default)
     {
         Stopwatch sw = Stopwatch.StartNew();
-        HttpResponseMessage response = await httpClient.SendAsync(request);
+        HttpResponseMessage response = await httpClient.SendAsync(request, cancellationToken);
         sw.Stop();
 
         return (response, sw.Elapsed);

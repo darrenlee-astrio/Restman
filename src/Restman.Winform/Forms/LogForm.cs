@@ -1,45 +1,78 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Logging;
+using Restman.Winform.Common.UiExtensions;
+using System.Text;
 
 namespace Restman.Winform
 {
     public partial class LogForm : Form
     {
-        private List<Log> _logs = new();
-
         public LogForm()
         {
             InitializeComponent();
+            Init();
         }
 
-        public void Clear()
+        public void Init()
         {
-            _logs.Clear();
-            allLogsTextBox.Clear();
+            this.SuspendLayout();
+            this.ControlBox = false;
+            this.ResumeLayout(false);
+
+            this.FormClosing += LogForm_FormClosing;
+
+            //scrollToCaretToolStripMenuItem.Checked = true;
+            logsTextBox.HideSelection = true;
         }
 
-        // event for log changed
+        private void LogForm_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void Log(string message, Color color)
+        {
+            logsTextBox.InvokeIfRequired(tb =>
+            {
+                tb.SelectionColor = color;
+
+                if (scrollToCaretToolStripMenuItem.Checked)
+                {
+                    tb.AppendText(message);
+                }
+                else
+                {
+                    int caretPos = tb.Text.Length;
+                    tb.Text += Environment.NewLine + message;
+                    tb.Select(caretPos, 0);
+                    tb.ScrollToCaret();
+                }
+            });
+        }
 
         public void LogInformation(string message)
         {
-            allLogsTextBox.SelectionColor = GetColorFromLogLevel(LogLevel.Information);
-            allLogsTextBox.AppendText(message + Environment.NewLine);
+            Log(message, GetColorFromLogLevel(LogLevel.Information));
         }
 
-        public void LogError(string message, Exception exception)
+        public void LogWarning(string message)
         {
-            allLogsTextBox.SelectionColor = GetColorFromLogLevel(LogLevel.Error);
+            Log(message, GetColorFromLogLevel(LogLevel.Information));
+        }
 
+        public void LogError(string message, Exception? exception)
+        {
             var sb = new StringBuilder();
             sb.AppendLine(message);
-            sb.AppendLine(exception.ToString());
-            sb.ToString();
 
-            allLogsTextBox.AppendText(sb.ToString() + Environment.NewLine);
-        }
+            if (exception is not null)
+            {
+                sb.AppendLine(exception.ToString());
+            }
 
-        public void Export()
-        {
-
+            Log(sb.ToString(), GetColorFromLogLevel(LogLevel.Error));
         }
 
         private Color GetColorFromLogLevel(LogLevel level)
@@ -51,31 +84,15 @@ namespace Restman.Winform
                 _ => Color.Black
             };
         }
-    }
 
-    public class Log
-    {
-        public LogLevel Level { get; set; }
-        public string Message { get; set; } = null!;
-        public Exception? Exception { get; set; }
-
-        public Log(LogLevel level, string message)
+        private void scrollToCaretToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Level = level;
-            Message = message;
+            //logsTextBox.HideSelection = !scrollToCaretToolStripMenuItem.Checked;
         }
 
-        public Log(LogLevel level, string message, Exception exception)
+        private void clearOutputToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Level = level;
-            Message = message;
-            Exception = exception;
+            logsTextBox.Clear();
         }
-    }
-
-    public enum LogLevel
-    {
-        Information,
-        Error
     }
 }

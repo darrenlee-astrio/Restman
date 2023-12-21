@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Forms;
-
-namespace Restman.Winform.Common.UiExtensions;
+﻿namespace Restman.Winform.Common.UiExtensions;
 
 public static class RichTextBoxExtensions
 {
     public static void AppendColoredText(
         this RichTextBox textBox,
-        string message, 
+        string message,
         Color color,
         bool scrollToCaret = true)
     {

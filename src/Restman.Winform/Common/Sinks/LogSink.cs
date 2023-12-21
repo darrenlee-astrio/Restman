@@ -1,4 +1,5 @@
-﻿using Serilog.Core;
+﻿using Restman.Winform.Views;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;

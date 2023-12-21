@@ -6,7 +6,7 @@ public static class DataGridViewExtensions
 {
     public static Dictionary<string, string> GetDictionary(this DataGridView dataGridView, bool onlyEnabledRows = true)
     {
-        return dataGridView.GetData<KeyValuePairRow>()
+        return dataGridView.GetData<KeyValueTwinWithEnable>()
                     .Where(x => x.Enable == onlyEnabledRows)
                     .Select(x => new KeyValuePair<string, string>(x.Key, x.Value))
                     .ToDictionary();

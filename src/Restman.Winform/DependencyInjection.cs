@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Restman.Winform.Common.Sinks;
+using Restman.Winform.Views;
 using Serilog;
 using Serilog.Events;
 
@@ -10,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddWinform(this IServiceCollection services)
     {
         var logForm = new LogForm();
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
             .MinimumLevel.Information()

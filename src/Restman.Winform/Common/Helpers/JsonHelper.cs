@@ -5,8 +5,13 @@ namespace Restman.Winform.Common.Helpers;
 
 public static class JsonHelper
 {
-    public static string PrettifyJson(string jsonString)
+    public static string PrettifyJson(string? jsonString)
     {
+        if (string.IsNullOrEmpty(jsonString))
+        {
+            return string.Empty;
+        }
+
         if (IsJsonValid(jsonString) is false)
         {
             return jsonString;

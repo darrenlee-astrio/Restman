@@ -28,122 +28,93 @@
         /// </summary>
         private void InitializeComponent()
         {
-            allLogsTextBox = new RichTextBox();
-            button1 = new Button();
-            button2 = new Button();
-            checkBox1 = new CheckBox();
-            tabControl1 = new TabControl();
-            allLogsTab = new TabPage();
-            errorLogsTab = new TabPage();
-            informationLogTab = new TabPage();
-            tabControl1.SuspendLayout();
-            allLogsTab.SuspendLayout();
+            logsTextBox = new RichTextBox();
+            menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            optionsToolStripMenuItem = new ToolStripMenuItem();
+            scrollToCaretToolStripMenuItem = new ToolStripMenuItem();
+            clearOutputToolStripMenuItem = new ToolStripMenuItem();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // allLogsTextBox
+            // logsTextBox
             // 
-            allLogsTextBox.Dock = DockStyle.Fill;
-            allLogsTextBox.Location = new Point(3, 3);
-            allLogsTextBox.Name = "allLogsTextBox";
-            allLogsTextBox.Size = new Size(725, 343);
-            allLogsTextBox.TabIndex = 0;
-            allLogsTextBox.Text = "";
+            logsTextBox.Dock = DockStyle.Fill;
+            logsTextBox.Location = new Point(0, 24);
+            logsTextBox.Name = "logsTextBox";
+            logsTextBox.Size = new Size(993, 399);
+            logsTextBox.TabIndex = 0;
+            logsTextBox.Text = "";
             // 
-            // button1
+            // menuStrip1
             // 
-            button1.Location = new Point(676, 391);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 1;
-            button1.Text = "Clear";
-            button1.UseVisualStyleBackColor = true;
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(993, 24);
+            menuStrip1.TabIndex = 3;
+            menuStrip1.Text = "menuStrip1";
             // 
-            // button2
+            // fileToolStripMenuItem
             // 
-            button2.Location = new Point(595, 391);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 2;
-            button2.Text = "Save";
-            button2.UseVisualStyleBackColor = true;
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
             // 
-            // checkBox1
+            // saveToolStripMenuItem
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(16, 395);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(100, 19);
-            checkBox1.TabIndex = 3;
-            checkBox1.Text = "Scroll to Caret";
-            checkBox1.UseVisualStyleBackColor = true;
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(98, 22);
+            saveToolStripMenuItem.Text = "Save";
             // 
-            // tabControl1
+            // optionsToolStripMenuItem
             // 
-            tabControl1.Controls.Add(allLogsTab);
-            tabControl1.Controls.Add(errorLogsTab);
-            tabControl1.Controls.Add(informationLogTab);
-            tabControl1.Location = new Point(12, 12);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(739, 377);
-            tabControl1.TabIndex = 4;
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { scrollToCaretToolStripMenuItem, clearOutputToolStripMenuItem });
+            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            optionsToolStripMenuItem.Size = new Size(61, 20);
+            optionsToolStripMenuItem.Text = "Options";
             // 
-            // allLogsTab
+            // scrollToCaretToolStripMenuItem
             // 
-            allLogsTab.Controls.Add(allLogsTextBox);
-            allLogsTab.Location = new Point(4, 24);
-            allLogsTab.Name = "allLogsTab";
-            allLogsTab.Padding = new Padding(3);
-            allLogsTab.Size = new Size(731, 349);
-            allLogsTab.TabIndex = 0;
-            allLogsTab.Text = "All";
-            allLogsTab.UseVisualStyleBackColor = true;
+            scrollToCaretToolStripMenuItem.CheckOnClick = true;
+            scrollToCaretToolStripMenuItem.Name = "scrollToCaretToolStripMenuItem";
+            scrollToCaretToolStripMenuItem.Size = new Size(148, 22);
+            scrollToCaretToolStripMenuItem.Text = "Scroll to Caret";
+            scrollToCaretToolStripMenuItem.CheckedChanged += scrollToCaretToolStripMenuItem_CheckedChanged;
             // 
-            // errorLogsTab
+            // clearOutputToolStripMenuItem
             // 
-            errorLogsTab.Location = new Point(4, 24);
-            errorLogsTab.Name = "errorLogsTab";
-            errorLogsTab.Padding = new Padding(3);
-            errorLogsTab.Size = new Size(731, 349);
-            errorLogsTab.TabIndex = 1;
-            errorLogsTab.Text = "Error";
-            errorLogsTab.UseVisualStyleBackColor = true;
-            // 
-            // informationLogTab
-            // 
-            informationLogTab.Location = new Point(4, 24);
-            informationLogTab.Name = "informationLogTab";
-            informationLogTab.Size = new Size(731, 349);
-            informationLogTab.TabIndex = 2;
-            informationLogTab.Text = "Info";
-            informationLogTab.UseVisualStyleBackColor = true;
+            clearOutputToolStripMenuItem.Name = "clearOutputToolStripMenuItem";
+            clearOutputToolStripMenuItem.Size = new Size(148, 22);
+            clearOutputToolStripMenuItem.Text = "Clear Output";
+            clearOutputToolStripMenuItem.Click += clearOutputToolStripMenuItem_Click;
             // 
             // LogForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(756, 423);
-            Controls.Add(tabControl1);
-            Controls.Add(checkBox1);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            ClientSize = new Size(993, 423);
+            Controls.Add(logsTextBox);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "LogForm";
             Text = "Logs";
-            tabControl1.ResumeLayout(false);
-            allLogsTab.ResumeLayout(false);
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private RichTextBox allLogsTextBox;
-        private Button button1;
-        private Button button2;
-        private CheckBox checkBox1;
-        private TabControl tabControl1;
-        private TabPage allLogsTab;
-        private TabPage errorLogsTab;
-        private TabPage informationLogTab;
+        private RichTextBox logsTextBox;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem optionsToolStripMenuItem;
+        private ToolStripMenuItem scrollToCaretToolStripMenuItem;
+        private ToolStripMenuItem clearOutputToolStripMenuItem;
     }
 }

@@ -1,24 +1,33 @@
-
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Restman.Application.Common.Extensions;
+using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Common.Helpers;
-using Restman.Winform.Common.Models;
 using Restman.Winform.Common.UiExtensions;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Restman.Winform
 {
     public partial class MainForm : Form
     {
-        private LogForm _logForm = new LogForm();
-        public MainForm()
+        private readonly ILogger<MainForm> _logger;
+        private readonly LogForm _logForm;
+        private readonly IMediator _mediator;
+        private CancellationTokenSource? _httpRequestCancellationTokenSource;
+
+        public MainForm(
+            ILogger<MainForm> logger,
+            LogForm logForm,
+            IMediator mediator)
         {
             InitializeComponent();
             Init();
+            _logger = logger;
+            _logForm = logForm;
+            _mediator = mediator;
 
-            //TODO: Add logging
             _logForm.Show();
-            _logForm.LogInformation("Testing");
         }
 
         private void Init()
@@ -31,7 +40,7 @@ namespace Restman.Winform
             requestQueryParamsDataGridView.Initialize(0.1, 0.45, 0.45);
             requestHeadersDataGridView.Initialize(0.1, 0.45, 0.45);
             responseHeadersDataGridView.Initialize(0.3, 0.7);
-            
+
         }
 
         private void HttpMethodsComboBox_SelectedIndexChanged(object? sender, EventArgs e)
@@ -51,69 +60,80 @@ namespace Restman.Winform
             }
         }
 
+        private ExecuteHttpRequestQuery BuildHttpRequestQuery()
+        {
+            var queryParams = requestQueryParamsDataGridView.GetDictionary(onlyEnabledRows: true);
+            var headers = requestHeadersDataGridView.GetDictionary(onlyEnabledRows: true);
+            var urlWithQuery = $"{urlTextBox.Text}{QueryStringHelper.Generate(queryParams)}";
+
+            return new ExecuteHttpRequestQuery(
+                url: urlWithQuery,
+                method: httpMethodsComboBox.Text,
+                headers: headers,
+                content: jsonRequestBodyRadioButton.Checked ? new StringContent(requestBodyJsonTextBox.Text, Encoding.UTF8, "application/json") : null
+            );
+        }
+
+        private void CancelHttpRequest()
+        {
+            _httpRequestCancellationTokenSource?.Cancel();
+            CleanupAfterHttpRequest();
+        }
+        private void CleanupAfterHttpRequest()
+        {
+            _httpRequestCancellationTokenSource?.Dispose();
+            _httpRequestCancellationTokenSource = null;
+            sendHttpRequestButton.Text = "Send";
+        }
+
         private async void sendHttpRequestButton_Click(object sender, EventArgs e)
         {
-            using (var httpClient = new HttpClient())
+            try
             {
-                var url = urlTextBox.Text;
-                var method = HttpMethod.Parse(httpMethodsComboBox.Text);
-
-                var enabledRequestQueryParams = requestQueryParamsDataGridView
-                                            .GetData<KeyValuePairRow>()
-                                            .Where(x => x.Enable == true)
-                                            .ToList();
-
-                var enabledRequestHeaders = requestHeadersDataGridView
-                                        .GetData<KeyValuePairRow>()
-                                        .Where(x => x.Enable == true)
-                                        .ToList();
-
-                var urlWithQuery = $"{url}{GenerateQueryString(enabledRequestQueryParams)}";
-                urlTextBox.Text = urlWithQuery;
-
-                using (var request = new HttpRequestMessage(method, urlWithQuery))
+                if (_httpRequestCancellationTokenSource is not null)
                 {
-                    foreach (var kvp in enabledRequestHeaders)
-                    {
-                        request.Headers.Add(kvp.Key, kvp.Value);
-                    }
-
-                    if (jsonRequestBodyRadioButton.Checked)
-                    {
-                        request.Content = new StringContent(requestBodyJsonTextBox.Text, Encoding.UTF8, "application/json");
-                    }
-
-                    (HttpResponseMessage response, TimeSpan elapsedTime) = await httpClient.SendTimedAsync(request);
-
-                    var sb = new StringBuilder();
-                    sb.Append($"{(int)response.StatusCode} {response.StatusCode}");
-                    sb.Append("  |  ");
-                    sb.Append($"{elapsedTime.TotalMilliseconds.ToString("#.##")} ms");
-                    httpResponseResultLabel.Text = sb.ToString();
-
-                    responseHeadersDataGridView.Rows.Clear();
-                    foreach (var kvp in response.Headers)
-                    {
-                        responseHeadersDataGridView.Rows.Add(kvp.Key, string.Join(";", kvp.Value));
-                    }
-
-                    string content = await response.Content.ReadAsStringAsync();
-                    httpResponseTextBox.Text = JsonHelper.PrettifyJson(content);
+                    CancelHttpRequest();
+                    return;
                 }
+
+                sendHttpRequestButton.Text = "Cancel";
+                _httpRequestCancellationTokenSource = new CancellationTokenSource();
+
+                var request = BuildHttpRequestQuery();
+                var result = await _mediator.Send(request, _httpRequestCancellationTokenSource.Token);
+
+                if (!result.IsError)
+                {
+                    HandleHttpResponse(result.Value);
+                }
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+            finally
+            {
+                CleanupAfterHttpRequest();
             }
         }
 
-        private string GenerateQueryString(List<KeyValuePairRow> kvpRows)
+        private void HandleHttpResponse(ExecuteHttpRequestQueryResponse response)
         {
-            if (kvpRows.Count == 0)
+            httpResponseResultLabel.Text = new StringBuilder($"{(int)response.StatusCode} {response.StatusCode}")
+                .Append("  |  ")
+                .Append($"{response.ElapsedTime.TotalMilliseconds.ToString("#.##")} ms")
+                .ToString();
+
+            responseHeadersDataGridView.Rows.Clear();
+            foreach (var kvp in response.Headers)
             {
-                return string.Empty;
+                responseHeadersDataGridView.Rows.Add(kvp.Key, string.Join(";", kvp.Value));
             }
-
-            string queryString = string.Join("&",
-                kvpRows.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
-
-            return "?" + queryString;
+            httpResponseTextBox.Text = JsonHelper.PrettifyJson(response.Content);
         }
 
         private void RequestBodyRadioButton_CheckedChanged(object sender, EventArgs e)

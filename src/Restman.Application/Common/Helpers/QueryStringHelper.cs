@@ -1,4 +1,4 @@
-﻿namespace Restman.Winform.Common.Helpers;
+﻿namespace Restman.Application.Common.Helpers;
 
 public static class QueryStringHelper
 {

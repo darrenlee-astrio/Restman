@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Restman.Winform.Common.Helpers;
+namespace Restman.Application.Common.Helpers;
 
 public static class JsonHelper
 {

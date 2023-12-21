@@ -20,7 +20,6 @@ internal static class Program
 
         var logForm = new LogForm();
 
-
         using var host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) =>
             {

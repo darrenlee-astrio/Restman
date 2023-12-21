@@ -483,7 +483,6 @@
         private Label label1;
         private RichTextBox requestBodyJsonTextBox;
         private TabPage requestBodyFormDataTab;
-        private GroupBox groupBox3;
         private RadioButton noRequestBodyRadioButton;
         private RadioButton jsonRequestBodyRadioButton;
         private RadioButton formDataRequestBodyRadioButton;

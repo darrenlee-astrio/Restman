@@ -12,7 +12,7 @@ internal partial class ExecuteHttpRequestQueryHandler : IRequestHandler<ExecuteH
     {
         // Should not dispose http client since it is retrieved via a DI container
         // Let the container handle disposal
-        _httpClient = httpClientFactory.CreateClient();
+        _httpClient = httpClientFactory.CreateClient(nameof(Application));
     }
 
     public async Task<ErrorOr<ExecuteHttpRequestQueryResponse>> Handle(ExecuteHttpRequestQuery request, CancellationToken cancellationToken)

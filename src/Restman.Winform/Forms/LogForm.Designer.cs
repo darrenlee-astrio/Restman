@@ -68,6 +68,7 @@
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             saveToolStripMenuItem.Size = new Size(98, 22);
             saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // optionsToolStripMenuItem
             // 
@@ -78,11 +79,12 @@
             // 
             // scrollToCaretToolStripMenuItem
             // 
+            scrollToCaretToolStripMenuItem.Checked = true;
             scrollToCaretToolStripMenuItem.CheckOnClick = true;
+            scrollToCaretToolStripMenuItem.CheckState = CheckState.Checked;
             scrollToCaretToolStripMenuItem.Name = "scrollToCaretToolStripMenuItem";
             scrollToCaretToolStripMenuItem.Size = new Size(148, 22);
             scrollToCaretToolStripMenuItem.Text = "Scroll to Caret";
-            scrollToCaretToolStripMenuItem.CheckedChanged += scrollToCaretToolStripMenuItem_CheckedChanged;
             // 
             // clearOutputToolStripMenuItem
             // 
@@ -96,11 +98,13 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(993, 423);
+            ControlBox = false;
             Controls.Add(logsTextBox);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "LogForm";
             Text = "Logs";
+            FormClosing += LogForm_FormClosing;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);

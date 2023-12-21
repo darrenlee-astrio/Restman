@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ErrorOr;
+using Microsoft.Extensions.Logging;
 using Restman.Winform.Common.UiExtensions;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Restman.Winform
 {
@@ -9,21 +11,9 @@ namespace Restman.Winform
         public LogForm()
         {
             InitializeComponent();
-            Init();
         }
 
-        public void Init()
-        {
-            this.SuspendLayout();
-            this.ControlBox = false;
-            this.ResumeLayout(false);
-
-            this.FormClosing += LogForm_FormClosing;
-
-            //scrollToCaretToolStripMenuItem.Checked = true;
-            logsTextBox.HideSelection = true;
-        }
-
+        #region Ui Event Handlers
         private void LogForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -31,68 +21,59 @@ namespace Restman.Winform
                 e.Cancel = true;
             }
         }
+        private void clearOutputToolStripMenuItem_Click(object sender, EventArgs e) => logsTextBox.Clear();
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.Title = "Save File";
+                saveFileDialog.DefaultExt = "txt";
+                saveFileDialog.AddExtension = true;
+
+                var result = saveFileDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    File.WriteAllTextAsync(saveFileDialog.FileName, logsTextBox.Text);
+                    MessageBox.Show($"File saved successfully");
+                }
+            }
+        }
+        #endregion
 
         private void Log(string message, Color color)
         {
             logsTextBox.InvokeIfRequired(tb =>
             {
-                tb.SelectionColor = color;
-
-                if (scrollToCaretToolStripMenuItem.Checked)
-                {
-                    tb.AppendText(message);
-                }
-                else
-                {
-                    int caretPos = tb.Text.Length;
-                    tb.Text += Environment.NewLine + message;
-                    tb.Select(caretPos, 0);
-                    tb.ScrollToCaret();
-                }
+                tb.Suspend();
+                tb.AppendColoredText(message, color, scrollToCaretToolStripMenuItem.Checked);
+                tb.Resume();
             });
         }
 
-        public void LogInformation(string message)
-        {
-            Log(message, GetColorFromLogLevel(LogLevel.Information));
-        }
-
-        public void LogWarning(string message)
-        {
-            Log(message, GetColorFromLogLevel(LogLevel.Information));
-        }
-
+        public void LogInformation(string message) => Log(message, GetColorFromLogLevel(LogLevel.Information));
+        public void LogWarning(string message) => Log(message, GetColorFromLogLevel(LogLevel.Warning));
         public void LogError(string message, Exception? exception)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine(message);
+            var stringBuilder = new StringBuilder()
+                .AppendLine(message)
+                .AppendLine(exception?.ToString() ?? string.Empty);
 
-            if (exception is not null)
-            {
-                sb.AppendLine(exception.ToString());
-            }
-
-            Log(sb.ToString(), GetColorFromLogLevel(LogLevel.Error));
+            Log(stringBuilder.ToString(), GetColorFromLogLevel(LogLevel.Error));
         }
 
         private Color GetColorFromLogLevel(LogLevel level)
         {
             return level switch
             {
-                LogLevel.Information => Color.Green,
-                LogLevel.Error => Color.Red,
+                LogLevel.Information => Color.DarkGreen,
+                LogLevel.Warning => Color.Orange,
+                LogLevel.Error => Color.DarkRed,
                 _ => Color.Black
             };
         }
 
-        private void scrollToCaretToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            //logsTextBox.HideSelection = !scrollToCaretToolStripMenuItem.Checked;
-        }
 
-        private void clearOutputToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            logsTextBox.Clear();
-        }
     }
 }

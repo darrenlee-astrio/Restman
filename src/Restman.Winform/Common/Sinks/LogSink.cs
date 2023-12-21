@@ -3,7 +3,7 @@ using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
 
-namespace Restman.Winform.Logging.Sinks;
+namespace Restman.Winform.Common.Sinks;
 
 public class LogSink : ILogEventSink
 {
@@ -26,6 +26,10 @@ public class LogSink : ILogEventSink
         {
             case LogEventLevel.Information:
                 _logForm.LogInformation(message);
+                break;
+
+            case LogEventLevel.Warning:
+                _logForm.LogWarning(message);
                 break;
 
             case LogEventLevel.Error:

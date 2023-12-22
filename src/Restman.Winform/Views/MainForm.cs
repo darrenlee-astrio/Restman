@@ -1,15 +1,11 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Restman.Application.Common.Extensions;
-using Restman.Application.Common.Helpers;
-using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Common.Models;
 using Restman.Winform.Common.UiExtensions;
 using Restman.Winform.Presenters;
 using Restman.Winform.Views.Interfaces;
-using System.Text;
 
 namespace Restman.Winform.Views;
 
@@ -113,7 +109,7 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-    
+
     public bool HasNoBody
     {
         get { return noRequestBodyRadioButton.Checked; }

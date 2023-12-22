@@ -6,13 +6,8 @@ using Restman.Application.Common.Formatters;
 using Restman.Application.Common.Helpers;
 using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
 using Restman.Winform.Common.Extensions;
-using Restman.Winform.Views;
 using Restman.Winform.Views.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Restman.Winform.Presenters;
 

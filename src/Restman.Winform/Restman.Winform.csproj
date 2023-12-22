@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Restman.Application\Restman.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\collections.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

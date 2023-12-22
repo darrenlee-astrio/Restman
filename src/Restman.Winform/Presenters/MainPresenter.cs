@@ -8,6 +8,7 @@ using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Views.Interfaces;
 using System.Text;
+using YamlDotNet.Core.Tokens;
 
 namespace Restman.Winform.Presenters;
 
@@ -23,8 +24,119 @@ public class MainPresenter
         _mainView = mainView;
         _mediator = mediator;
         _logger = logger;
+
+        _mainView.OnCollectionsChanged += OnCollectionsChanged;
+        _mainView.OnSelectedCollectionNameChanged += OnSelectedCollectionNameChanged;
+        _mainView.OnSelectedRequestNameChanged += OnSelectedRequestNameChanged;
+        _mainView.OnRequestMethodChanged += OnRequestMethodChanged;
+        _mainView.OnRequestBodyTypeChanged += OnRequestBodyTypeChanged;
+
+        _mainView.OnRequestSending += OnRequestSending;
+        _mainView.OnRequestCompleted += OnRequestCompleted;
         _mainView.SendClicked += SendHttpRequest;
     }
+
+    public void Cleanup()
+    {
+
+    }
+
+    private void OnRequestCompleted(object? sender, EventArgs e)
+    {
+        if (_mainView.IsRequestCompleted)
+        {
+            _mainView.IsRequestSending = false;
+            _mainView.SendHttpRequestButtonText = "Completed";
+        }
+    }
+
+    private void OnRequestSending(object? sender, EventArgs e)
+    {
+        if (_mainView.IsRequestSending)
+        {
+            _mainView.IsRequestCompleted = false;
+            _mainView.SendHttpRequestButtonText = "Cancel";
+        }
+    }
+
+    private void OnRequestMethodChanged(object? sender, EventArgs e)
+    {
+        switch (_mainView.Method)
+        {
+            case "GET":
+                _mainView.HasNoBody = true;
+                break;
+
+            case "POST":
+                break;
+
+            case "PUT":
+                break;
+
+            case "DELETE":
+                break;
+
+        }
+    }
+
+    private void OnRequestBodyTypeChanged(object? sender, EventArgs e)
+    {
+        if (_mainView.HasNoBody)
+        {
+            _mainView.HasJsonBody = false;
+            _mainView.HasFormData = false;
+        }
+        else if ( _mainView.HasJsonBody)
+        {
+            _mainView.HasNoBody = false;
+            _mainView.HasFormData = false;
+        }
+        else if (_mainView.HasFormData)
+        {
+            _mainView.HasNoBody = false;
+            _mainView.HasFormData = false;
+        }
+    }
+
+    #region Ui Changed Events
+    private void OnCollectionsChanged(object? sender, EventArgs e)
+    {
+        _mainView.CollectionNames = _mainView.Collections.Select(x => x.Name).ToList();
+        _mainView.SelectedCollection = _mainView.Collections.First();
+        _mainView.SelectedCollectionName = _mainView.SelectedCollection.Name;
+        _mainView.SelectedCollectionDescription = _mainView.SelectedCollection.Description;
+
+    }
+    private void OnSelectedCollectionNameChanged(object? sender, EventArgs e)
+    {
+        _mainView.Requests = _mainView.SelectedCollection.Requests;
+        _mainView.RequestNames = _mainView.Requests.Select(x => x.Name).ToList();
+        _mainView.SelectedRequest = _mainView.Requests.First();
+        _mainView.SelectedRequestName = _mainView.SelectedRequest.Name;
+    }
+    private void OnSelectedRequestNameChanged(object? sender, EventArgs e)
+    {
+        _mainView.SelectedRequest = _mainView.Requests.Where(x => x.Name == _mainView.SelectedRequestName).First();
+        _mainView.Method = _mainView.SelectedRequest.Method;
+        _mainView.Url = _mainView.SelectedCollection.BaseUrl + _mainView.SelectedRequest.EndUrl;
+        _mainView.SelectedRequestDescription = _mainView.SelectedRequest.Description;
+        _mainView.RequestHeaders = _mainView.SelectedRequest.Headers.ToKeyValueTwinsWithEnable();
+
+        if (!string.IsNullOrEmpty(_mainView.SelectedRequest.JsonContent))
+        {
+            _mainView.HasJsonBody = true;
+            _mainView.RequestBodyJson = _mainView.SelectedRequest.JsonContent;
+        }
+        else
+        {
+            _mainView.HasNoBody = true;
+            _mainView.RequestBodyJson = string.Empty;
+        }
+    }
+    #endregion
+
+
+
 
     private async void SendHttpRequest(object? sender, EventArgs e)
     {
@@ -88,7 +200,7 @@ public class MainPresenter
     {
         _httpRequestCancellationTokenSource?.Dispose();
         _httpRequestCancellationTokenSource = null;
-        IsSendingHttpRequest = false;
+        _mainView.IsRequestSending = false;
     }
     private void DisplayHttpResponse(ExecuteHttpRequestQueryResponse response)
     {
@@ -101,14 +213,4 @@ public class MainPresenter
         _mainView.ResponseBodyJson = JsonHelper.PrettifyJson(response.Content);
     }
 
-    private bool _isSendingHttpRequest = false;
-    public bool IsSendingHttpRequest
-    {
-        get { return _isSendingHttpRequest; }
-        set
-        {
-            _isSendingHttpRequest = value;
-            _mainView.SendHttpRequestButtonText = IsSendingHttpRequest ? "Cancel" : "Send";
-        }
-    }
 }

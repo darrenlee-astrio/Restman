@@ -1,0 +1,49 @@
+- name: Reqres
+  base-url: https://reqres.in
+  description: A sample api for testing
+  default-headers: 
+  requests:
+  - name: Get Users
+    description: Gets all users from API
+    method: GET
+    end-url: /api/users
+    headers: 
+    json-content: 
+  - name: Get Users With Delay
+    description: Gets all users from API with 3 seconds delay
+    method: GET
+    end-url: /api/users?delay=3
+    headers: 
+    json-content: 
+  - name: Get Single User
+    description: Gets a single user by id
+    method: GET
+    end-url: /api/users/1
+    headers: 
+    json-content: 
+  - name: Create User
+    description: Creates a user
+    method: POST
+    end-url: /api/users
+    headers: 
+    json-content: >-
+      {
+        "name": "morpheus",
+        "job": "leader"
+      }
+  - name: Update User
+    description: Update a user by id
+    method: PUT
+    end-url: /api/users/1
+    headers: 
+    json-content: >-
+      {
+        "name": "morpheus",
+        "job": "employee"
+      }
+  - name: Delete User
+    description: Deletes a user by id
+    method: DELETE
+    end-url: /api/users/1
+    headers: 
+    json-content: 

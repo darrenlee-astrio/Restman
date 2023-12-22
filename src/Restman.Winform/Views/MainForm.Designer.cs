@@ -65,6 +65,8 @@ partial class MainForm
         responseHeadersDataGridViewValueColumn = new DataGridViewTextBoxColumn();
         httpResponseResultLabel = new Label();
         groupBox3 = new GroupBox();
+        requestDescriptionLabel = new Label();
+        collectionDescriptionLabel = new Label();
         collectionComboBox = new ComboBox();
         requestComboBox = new ComboBox();
         label3 = new Label();
@@ -331,6 +333,8 @@ partial class MainForm
         // 
         // httpMethodsComboBox
         // 
+        httpMethodsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        httpMethodsComboBox.Enabled = false;
         httpMethodsComboBox.FormattingEnabled = true;
         httpMethodsComboBox.Location = new Point(6, 22);
         httpMethodsComboBox.Name = "httpMethodsComboBox";
@@ -420,6 +424,8 @@ partial class MainForm
         // 
         // groupBox3
         // 
+        groupBox3.Controls.Add(requestDescriptionLabel);
+        groupBox3.Controls.Add(collectionDescriptionLabel);
         groupBox3.Controls.Add(collectionComboBox);
         groupBox3.Controls.Add(requestComboBox);
         groupBox3.Controls.Add(label3);
@@ -431,26 +437,40 @@ partial class MainForm
         groupBox3.TabStop = false;
         groupBox3.Text = "Collections";
         // 
+        // requestDescriptionLabel
+        // 
+        requestDescriptionLabel.Location = new Point(375, 51);
+        requestDescriptionLabel.Name = "requestDescriptionLabel";
+        requestDescriptionLabel.Size = new Size(391, 23);
+        requestDescriptionLabel.TabIndex = 5;
+        // 
+        // collectionDescriptionLabel
+        // 
+        collectionDescriptionLabel.Location = new Point(86, 51);
+        collectionDescriptionLabel.Name = "collectionDescriptionLabel";
+        collectionDescriptionLabel.Size = new Size(210, 23);
+        collectionDescriptionLabel.TabIndex = 4;
+        // 
         // collectionComboBox
         // 
         collectionComboBox.FormattingEnabled = true;
-        collectionComboBox.Location = new Point(86, 30);
+        collectionComboBox.Location = new Point(86, 25);
         collectionComboBox.Name = "collectionComboBox";
-        collectionComboBox.Size = new Size(290, 23);
+        collectionComboBox.Size = new Size(210, 23);
         collectionComboBox.TabIndex = 3;
         // 
         // requestComboBox
         // 
         requestComboBox.FormattingEnabled = true;
-        requestComboBox.Location = new Point(482, 30);
+        requestComboBox.Location = new Point(375, 25);
         requestComboBox.Name = "requestComboBox";
-        requestComboBox.Size = new Size(284, 23);
+        requestComboBox.Size = new Size(391, 23);
         requestComboBox.TabIndex = 2;
         // 
         // label3
         // 
         label3.AutoSize = true;
-        label3.Location = new Point(424, 33);
+        label3.Location = new Point(317, 28);
         label3.Name = "label3";
         label3.Size = new Size(52, 15);
         label3.TabIndex = 1;
@@ -459,7 +479,7 @@ partial class MainForm
         // label2
         // 
         label2.AutoSize = true;
-        label2.Location = new Point(16, 33);
+        label2.Location = new Point(16, 28);
         label2.Name = "label2";
         label2.Size = new Size(64, 15);
         label2.TabIndex = 0;
@@ -543,4 +563,6 @@ partial class MainForm
     private ComboBox requestComboBox;
     private Label label3;
     private Label label2;
+    private Label requestDescriptionLabel;
+    private Label collectionDescriptionLabel;
 }

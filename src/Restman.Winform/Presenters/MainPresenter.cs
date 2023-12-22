@@ -135,9 +135,6 @@ public class MainPresenter
     }
     #endregion
 
-
-
-
     private async void SendHttpRequest(object? sender, EventArgs e)
     {
         try
@@ -149,7 +146,7 @@ public class MainPresenter
                 return;
             }
 
-            IsSendingHttpRequest = true;
+            _mainView.IsRequestSending = true;
             _httpRequestCancellationTokenSource = new CancellationTokenSource();
 
             var result = await _mediator.Send(BuildHttpRequestQuery(), _httpRequestCancellationTokenSource.Token);

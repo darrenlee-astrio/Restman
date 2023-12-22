@@ -7,6 +7,7 @@ using Restman.Winform.Common.Models;
 using Restman.Winform.Common.UiExtensions;
 using Restman.Winform.Presenters;
 using Restman.Winform.Views.Interfaces;
+using System;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -24,81 +25,13 @@ public partial class MainForm : Form, IMainView
         LogForm logForm,
         IMediator mediator)
     {
-        InitializeComponent();
-
         _logger = logger;
         _logForm = logForm;
         _logForm.Show();
-
         _presenter = new MainPresenter(this, mediator, mainPresenterLogger);
 
+        InitializeComponent();
         Init();
-    }
-
-    public void Test()
-    {
-        var collection = new RequestCollection
-        {
-            Name = "Reqres",
-            BaseUrl = "https://reqres.in",
-            Requests = new List<RequestItem>
-            {
-                new RequestItem
-                {
-                    Name = "Get Users",
-                    Method = $"{HttpMethod.Get}",
-                    EndUrl = "/api/users",
-                    Description = "Gets all users from API"
-                },
-                new RequestItem
-                {
-                    Name = "Get Users With Delay",
-                    Method = $"{HttpMethod.Get}",
-                    EndUrl = "/api/users?delay=3",
-                    Description = "Gets all users from API with 3 seconds delay"
-                },
-                new RequestItem
-                {
-                    Name = "Get Single User",
-                    Method = $"{HttpMethod.Get}",
-                    EndUrl = "/api/users/1",
-                    Description = "Gets a single user by id"
-                },
-                new RequestItem
-                {
-                    Name = "Create User",
-                    Method = $"{HttpMethod.Post}",
-                    EndUrl = "/api/users",
-                    Description = "Creates a user",
-                    JsonContent = """
-                    {
-                      "name": "morpheus",
-                      "job": "leader"
-                    }
-                    """
-                },
-                new RequestItem
-                {
-                    Name = "Update User",
-                    Method = $"{HttpMethod.Put}",
-                    EndUrl = "/api/users/1",
-                    Description = "Update a user by id",
-                    JsonContent = """
-                    {
-                      "name": "morpheus",
-                      "job": "employee"
-                    }
-                    """
-                },
-                new RequestItem
-                {
-                    Name = "Delete User",
-                    Method = $"{HttpMethod.Delete}",
-                    EndUrl = "/api/users/1",
-                    Description = "Creates a user"
-                }
-            }
-        };
     }
 
     private void Init()
@@ -107,9 +40,7 @@ public partial class MainForm : Form, IMainView
 
         #region Events Initialisation
         sendHttpRequestButton.Click += (sender, e) => SendClicked?.Invoke(this, EventArgs.Empty);
-
-        this.FormClosing += (sender, e) => { _presenter.Cleanup(); };
-
+        FormClosing += (sender, e) => { _presenter.Cleanup(); };
         urlTextBox.TextChanged += (sender, e) => { Url = urlTextBox.Text; };
         requestBodyJsonTextBox.TextChanged += (sender, e) => { RequestBodyJson = requestBodyJsonTextBox.Text; };
         collectionComboBox.SelectedIndexChanged += (sender, e) => { SelectedCollectionName = collectionComboBox.Text; };
@@ -131,12 +62,13 @@ public partial class MainForm : Form, IMainView
     {
         try
         {
-            Collections = YamlHelper.Deserialize<List<RequestCollection>>("Resources\\collections.yml");
-
+            Collections = YamlHelper.Deserialize<List<RequestCollection>>("Resources\\collections.yaml");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred when loading collections.");
+            MessageBox.Show($"An error occurred when loading collections. \n\n{ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(1);
         }
     }
 

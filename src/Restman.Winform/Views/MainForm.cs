@@ -7,9 +7,6 @@ using Restman.Winform.Common.Models;
 using Restman.Winform.Common.UiExtensions;
 using Restman.Winform.Presenters;
 using Restman.Winform.Views.Interfaces;
-using System;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace Restman.Winform.Views;
 
@@ -82,7 +79,7 @@ public partial class MainForm : Form, IMainView
     private bool _isRequestSending = false;
     private bool _isRequestCompleted = false;
 
-    
+
     public List<RequestCollection> Collections
     {
         get { return _collections; }
@@ -220,7 +217,7 @@ public partial class MainForm : Form, IMainView
                 {
                     gridView.Rows.Add(row.Enable, row.Key, row.Value);
                 }
-            }); 
+            });
         }
     }
     public bool HasNoBody

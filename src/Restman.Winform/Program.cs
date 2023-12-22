@@ -53,7 +53,7 @@ internal static class Program
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         Exception? exception = e.ExceptionObject as Exception;
-        
+
         if (exception is null)
         {
             return;

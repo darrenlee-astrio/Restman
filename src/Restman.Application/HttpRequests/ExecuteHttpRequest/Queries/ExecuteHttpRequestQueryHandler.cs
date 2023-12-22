@@ -17,15 +17,13 @@ internal partial class ExecuteHttpRequestQueryHandler : IRequestHandler<ExecuteH
 
     public async Task<ErrorOr<ExecuteHttpRequestQueryResponse>> Handle(ExecuteHttpRequestQuery request, CancellationToken cancellationToken)
     {
-        // TODO: Log http request?
-        // Use custom serilog sink to inject into LogForm?
         var response = new ExecuteHttpRequestQueryResponse();
 
         using (var httpRequest = new HttpRequestMessage(HttpMethod.Parse(request.Method), request.Url))
         {
             foreach (var kvp in request.Headers)
             {
-                request.Headers.Add(kvp.Key, kvp.Value);
+                httpRequest.Headers.Add(kvp.Key, kvp.Value);
             }
 
             if (request.Content is not null)

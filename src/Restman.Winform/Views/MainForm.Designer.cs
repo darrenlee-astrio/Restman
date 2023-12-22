@@ -104,9 +104,9 @@ partial class MainForm
         // 
         // tabControl1
         // 
-        tabControl1.Controls.Add(requestParamsTab);
         tabControl1.Controls.Add(requestHeadersTab);
         tabControl1.Controls.Add(requestBodyTab);
+        tabControl1.Controls.Add(requestParamsTab);
         tabControl1.Location = new Point(6, 51);
         tabControl1.Name = "tabControl1";
         tabControl1.SelectedIndex = 0;
@@ -136,6 +136,8 @@ partial class MainForm
         // 
         // requestQueryParamsDataGridView
         // 
+        requestQueryParamsDataGridView.AllowUserToAddRows = false;
+        requestQueryParamsDataGridView.AllowUserToDeleteRows = false;
         requestQueryParamsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         requestQueryParamsDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestQueryParamsDataGridViewEnableColumn, requestQueryParamsDataGridViewKeyColumn, requestQueryParamsDataGridViewValueColumn });
         requestQueryParamsDataGridView.Location = new Point(6, 44);
@@ -181,6 +183,8 @@ partial class MainForm
         // 
         // requestHeadersDataGridView
         // 
+        requestHeadersDataGridView.AllowUserToAddRows = false;
+        requestHeadersDataGridView.AllowUserToDeleteRows = false;
         requestHeadersDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         requestHeadersDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestHeadersDataGridViewEnableColumn, requestHeadersDataGridViewKeyColumn, requestHeadersDataGridViewValueColumn });
         requestHeadersDataGridView.Location = new Point(6, 44);

@@ -8,7 +8,6 @@ using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Views.Interfaces;
 using System.Text;
-using YamlDotNet.Core.Tokens;
 
 namespace Restman.Winform.Presenters;
 
@@ -67,7 +66,11 @@ public class MainPresenter
         _mainView.Method = _mainView.SelectedRequest.Method;
         _mainView.Url = _mainView.SelectedCollection.BaseUrl + _mainView.SelectedRequest.EndUrl;
         _mainView.SelectedRequestDescription = _mainView.SelectedRequest.Description;
-        _mainView.RequestHeaders = _mainView.SelectedRequest.Headers.ToKeyValueTwinsWithEnable();
+
+        var collectionDefaultHeaders = _mainView.SelectedCollection.DefaultHeaders.ToKeyValueTwinsWithEnable();
+        var requestHeaders = _mainView.SelectedRequest.Headers.ToKeyValueTwinsWithEnable();
+
+        _mainView.RequestHeaders = collectionDefaultHeaders.Combine(requestHeaders);
 
         if (!string.IsNullOrEmpty(_mainView.SelectedRequest.JsonContent))
         {
@@ -171,7 +174,7 @@ public class MainPresenter
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "An error occurred while sending HTTP request.");
         }
         finally
         {
@@ -184,6 +187,8 @@ public class MainPresenter
     {
         var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
         _mainView.Url = $"{_mainView.Url}{QueryStringHelper.Generate(queryParams)}";
+
+
 
         StringContent? content = null;
         if (_mainView.HasJsonBody && !string.IsNullOrEmpty(_mainView.RequestBodyJson))

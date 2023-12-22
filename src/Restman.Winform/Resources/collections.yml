@@ -1,13 +1,22 @@
 - name: Reqres
   base-url: https://reqres.in
   description: A sample api for testing
-  default-headers: 
+  default-headers:
+  - key: x-api-key
+    value: "123456789"
+    enable: true
   requests:
   - name: Get Users
     description: Gets all users from API
     method: GET
     end-url: /api/users
-    headers: 
+    headers:
+      - key: x-api-key
+        value: 0987654321
+        enable: true
+      - key: x-tenant-id
+        value: astrio
+        enable: true
     json-content: 
   - name: Get Users With Delay
     description: Gets all users from API with 3 seconds delay

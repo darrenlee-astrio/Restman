@@ -38,63 +38,10 @@ public class MainPresenter
 
     public void Cleanup()
     {
-
-    }
-
-    private void OnRequestCompleted(object? sender, EventArgs e)
-    {
-        if (_mainView.IsRequestCompleted)
-        {
-            _mainView.IsRequestSending = false;
-            _mainView.SendHttpRequestButtonText = "Completed";
-        }
-    }
-
-    private void OnRequestSending(object? sender, EventArgs e)
-    {
         if (_mainView.IsRequestSending)
         {
-            _mainView.IsRequestCompleted = false;
-            _mainView.SendHttpRequestButtonText = "Cancel";
-        }
-    }
-
-    private void OnRequestMethodChanged(object? sender, EventArgs e)
-    {
-        switch (_mainView.Method)
-        {
-            case "GET":
-                _mainView.HasNoBody = true;
-                break;
-
-            case "POST":
-                break;
-
-            case "PUT":
-                break;
-
-            case "DELETE":
-                break;
-
-        }
-    }
-
-    private void OnRequestBodyTypeChanged(object? sender, EventArgs e)
-    {
-        if (_mainView.HasNoBody)
-        {
-            _mainView.HasJsonBody = false;
-            _mainView.HasFormData = false;
-        }
-        else if ( _mainView.HasJsonBody)
-        {
-            _mainView.HasNoBody = false;
-            _mainView.HasFormData = false;
-        }
-        else if (_mainView.HasFormData)
-        {
-            _mainView.HasNoBody = false;
-            _mainView.HasFormData = false;
+            _httpRequestCancellationTokenSource?.Cancel();
+            _mainView.IsRequestCompleted = true;
         }
     }
 
@@ -133,16 +80,73 @@ public class MainPresenter
             _mainView.RequestBodyJson = string.Empty;
         }
     }
+    private void OnRequestBodyTypeChanged(object? sender, EventArgs e)
+    {
+        if (_mainView.HasNoBody)
+        {
+            _mainView.HasJsonBody = false;
+            _mainView.HasFormData = false;
+        }
+        else if (_mainView.HasJsonBody)
+        {
+            _mainView.HasNoBody = false;
+            _mainView.HasFormData = false;
+        }
+        else if (_mainView.HasFormData)
+        {
+            _mainView.HasNoBody = false;
+            _mainView.HasFormData = false;
+        }
+    }
+    private void OnRequestMethodChanged(object? sender, EventArgs e)
+    {
+        switch (_mainView.Method)
+        {
+            case "GET":
+                _mainView.HasNoBody = true;
+                break;
+
+            case "POST":
+                break;
+
+            case "PUT":
+                break;
+
+            case "DELETE":
+                break;
+
+        }
+    }
+    private void OnRequestSending(object? sender, EventArgs e)
+    {
+        if (_mainView.IsRequestSending)
+        {
+            _mainView.IsRequestCompleted = false;
+            _mainView.SendHttpRequestButtonText = "Cancel";
+        }
+    }
+    private void OnRequestCompleted(object? sender, EventArgs e)
+    {
+        if (_mainView.IsRequestCompleted)
+        {
+            _mainView.IsRequestSending = false;
+            _mainView.SendHttpRequestButtonText = "Send";
+            _httpRequestCancellationTokenSource?.Dispose();
+            _httpRequestCancellationTokenSource = null;
+            _mainView.IsRequestSending = false;
+        }
+    }
     #endregion
 
+    #region Action Events
     private async void SendHttpRequest(object? sender, EventArgs e)
     {
         try
         {
             if (_httpRequestCancellationTokenSource is not null)
             {
-                _httpRequestCancellationTokenSource?.Cancel();
-                HttpRequestCompleted();
+                _httpRequestCancellationTokenSource.Cancel();
+                _mainView.IsRequestCompleted = true;
                 return;
             }
 
@@ -171,9 +175,10 @@ public class MainPresenter
         }
         finally
         {
-            HttpRequestCompleted();
+            _mainView.IsRequestCompleted = true;
         }
     }
+    #endregion
 
     private ExecuteHttpRequestQuery BuildHttpRequestQuery()
     {
@@ -193,12 +198,7 @@ public class MainPresenter
             content: content
         );
     }
-    private void HttpRequestCompleted()
-    {
-        _httpRequestCancellationTokenSource?.Dispose();
-        _httpRequestCancellationTokenSource = null;
-        _mainView.IsRequestSending = false;
-    }
+
     private void DisplayHttpResponse(ExecuteHttpRequestQueryResponse response)
     {
         _mainView.Result = new StringBuilder()

@@ -141,7 +141,16 @@ public partial class MainForm : Form, IMainView
     }
 
     #region Properties
+
     private List<RequestCollection> _collections = new();
+    private List<RequestItem> _requests = new();
+    private RequestCollection _selectedCollection = new();
+    private RequestItem _selectedRequest = new();
+    private string _selectedRequestName = string.Empty;
+    private bool _isRequestSending = false;
+    private bool _isRequestCompleted = false;
+
+    
     public List<RequestCollection> Collections
     {
         get { return _collections; }
@@ -156,16 +165,11 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
-    private List<RequestItem> _requests = new();
     public List<RequestItem> Requests
     {
         get { return _requests; }
         set { _requests = value; }
     }
-
-
-    private RequestCollection _selectedCollection = new();
     public RequestCollection SelectedCollection
     {
         get { return _selectedCollection; }
@@ -175,14 +179,11 @@ public partial class MainForm : Form, IMainView
 
         }
     }
-
-    private RequestItem _selectedRequest = new();
     public RequestItem SelectedRequest
     {
         get { return _selectedRequest; }
         set { _selectedRequest = value; }
     }
-
     public List<string> CollectionNames
     {
         get { return collectionComboBox.Items.Cast<string>().ToList(); }
@@ -196,7 +197,6 @@ public partial class MainForm : Form, IMainView
 
         }
     }
-
     public List<string> RequestNames
     {
         get { return requestComboBox.Items.Cast<string>().ToList(); }
@@ -209,7 +209,6 @@ public partial class MainForm : Form, IMainView
             });
         }
     }
-
     public string SelectedCollectionName
     {
         get { return collectionComboBox.Text; }
@@ -219,8 +218,6 @@ public partial class MainForm : Form, IMainView
             OnSelectedCollectionNameChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-
-    private string _selectedRequestName = string.Empty;
     public string SelectedRequestName
     {
         get { return requestComboBox.Text; }
@@ -235,19 +232,16 @@ public partial class MainForm : Form, IMainView
             OnSelectedRequestNameChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-
     public string SelectedCollectionDescription
     {
         get { return collectionDescriptionLabel.Text; }
         set { collectionDescriptionLabel.InvokeIfRequired(label => label.Text = value); }
     }
-
     public string SelectedRequestDescription
     {
         get { return requestDescriptionLabel.Text; }
         set { requestDescriptionLabel.InvokeIfRequired(label => label.Text = value); }
     }
-
     public string Method
     {
         get => httpMethodsComboBox.Text;
@@ -257,19 +251,16 @@ public partial class MainForm : Form, IMainView
             OnRequestMethodChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-
     public string Url
     {
         get { return urlTextBox.Text; }
         set { urlTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-
     public string? Content
     {
         get { return requestBodyJsonTextBox.Text; }
         set { requestBodyJsonTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-
     public List<KeyValueTwinWithEnable> RequestQueryParameters
     {
         get { return requestQueryParamsDataGridView.GetData<KeyValueTwinWithEnable>(); }
@@ -285,7 +276,6 @@ public partial class MainForm : Form, IMainView
             });
         }
     }
-
     public List<KeyValueTwinWithEnable> RequestHeaders
     {
         get { return requestHeadersDataGridView.GetData<KeyValueTwinWithEnable>(); }
@@ -301,7 +291,6 @@ public partial class MainForm : Form, IMainView
             }); 
         }
     }
-
     public bool HasNoBody
     {
         get { return noRequestBodyRadioButton.Checked; }
@@ -319,7 +308,6 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
     public bool HasJsonBody
     {
         get { return jsonRequestBodyRadioButton.Checked; }
@@ -337,7 +325,6 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
     public bool HasFormData
     {
         get { return formDataRequestBodyRadioButton.Checked; }
@@ -355,25 +342,21 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
     public string? RequestBodyJson
     {
         get { return requestBodyJsonTextBox.Text; }
         set { requestBodyJsonTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-
     public string Result
     {
         get { return httpResponseResultLabel.Text; }
         set { httpResponseResultLabel.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-
     public string? ResponseBodyJson
     {
         get { return httpResponseTextBox.Text; }
         set { httpResponseTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-
     public List<KeyValueTwin> ResponseHeaders
     {
         get { return responseHeadersDataGridView.GetData<KeyValueTwin>(); }
@@ -389,8 +372,6 @@ public partial class MainForm : Form, IMainView
             });
         }
     }
-
-    private bool _isRequestSending = false;
     public bool IsRequestSending
     {
         get { return _isRequestSending; }
@@ -404,9 +385,6 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
-    private bool _isRequestCompleted = false;
-
     public bool IsRequestCompleted
     {
         get { return _isRequestCompleted; }
@@ -420,8 +398,6 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-
-
     public string SendHttpRequestButtonText
     {
         get { return sendHttpRequestButton.Text; }
@@ -435,10 +411,8 @@ public partial class MainForm : Form, IMainView
     public event EventHandler? OnSelectedRequestNameChanged;
     public event EventHandler? OnRequestMethodChanged;
     public event EventHandler? OnRequestBodyTypeChanged;
-
     public event EventHandler? OnRequestSending;
     public event EventHandler? OnRequestCompleted;
     public event EventHandler? SendClicked;
-
     #endregion
 }

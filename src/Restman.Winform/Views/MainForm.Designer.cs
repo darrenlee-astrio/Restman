@@ -395,6 +395,8 @@ partial class MainForm
         // 
         // responseHeadersDataGridView
         // 
+        responseHeadersDataGridView.AllowUserToAddRows = false;
+        responseHeadersDataGridView.AllowUserToDeleteRows = false;
         responseHeadersDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         responseHeadersDataGridView.Columns.AddRange(new DataGridViewColumn[] { responseHeadersDataGridViewKeyColumn, responseHeadersDataGridViewValueColumn });
         responseHeadersDataGridView.Dock = DockStyle.Fill;

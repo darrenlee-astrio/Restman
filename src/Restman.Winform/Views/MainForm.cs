@@ -62,7 +62,7 @@ public partial class MainForm : Form, IMainView
     {
         try
         {
-            Collections = YamlHelper.Deserialize<List<RequestCollection>>("Resources\\collections.yaml");
+            Collections = YamlHelper.Deserialize<List<RequestCollection>>("Resources\\collections.yml");
         }
         catch (Exception ex)
         {

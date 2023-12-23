@@ -1,6 +1,6 @@
-﻿namespace Restman.Application.Common.Models;
+﻿namespace Restman.Application.Common.Models.AppData;
 
-public class HeaderItem
+public class KeyValueConfiguration
 {
     public bool Enable { get; set; } = false;
     public string Key { get; set; } = null!;

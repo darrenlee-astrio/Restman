@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using ErrorOr;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Restman.Application.Common.Constants;
 using Restman.Application.Common.Formatters;
 using Restman.Application.Common.Helpers;
-using Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
+using Restman.Application.Http;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Views.Interfaces;
 using System.Text;
@@ -29,6 +29,7 @@ public class MainPresenter
         _mainView.OnSelectedRequestNameChanged += OnSelectedRequestNameChanged;
         _mainView.OnRequestMethodChanged += OnRequestMethodChanged;
         _mainView.OnRequestBodyTypeChanged += OnRequestBodyTypeChanged;
+        _mainView.OnRequestQueryParameterChanged += OnRequestQueryParameterChanged;
 
         _mainView.OnRequestSending += OnRequestSending;
         _mainView.OnRequestCompleted += OnRequestCompleted;
@@ -64,12 +65,12 @@ public class MainPresenter
     {
         _mainView.SelectedRequest = _mainView.Requests.Where(x => x.Name == _mainView.SelectedRequestName).First();
         _mainView.Method = _mainView.SelectedRequest.Method;
-        _mainView.Url = _mainView.SelectedCollection.BaseUrl + _mainView.SelectedRequest.EndUrl;
+        _mainView.RequestQueryParameters = _mainView.SelectedRequest.QueryParams.ToKeyValueTwinsWithEnable();
+        _mainView.Url = GenerateRequestUrl();
         _mainView.SelectedRequestDescription = _mainView.SelectedRequest.Description;
 
         var collectionDefaultHeaders = _mainView.SelectedCollection.DefaultHeaders.ToKeyValueTwinsWithEnable();
         var requestHeaders = _mainView.SelectedRequest.Headers.ToKeyValueTwinsWithEnable();
-
         _mainView.RequestHeaders = collectionDefaultHeaders.Combine(requestHeaders);
 
         if (!string.IsNullOrEmpty(_mainView.SelectedRequest.JsonContent))
@@ -108,17 +109,11 @@ public class MainPresenter
             case "GET":
                 _mainView.HasNoBody = true;
                 break;
-
-            case "POST":
-                break;
-
-            case "PUT":
-                break;
-
-            case "DELETE":
-                break;
-
         }
+    }
+    private void OnRequestQueryParameterChanged(object? sender, EventArgs e)
+    {
+        _mainView.Url = GenerateRequestUrl();
     }
     private void OnRequestSending(object? sender, EventArgs e)
     {
@@ -156,7 +151,7 @@ public class MainPresenter
             _mainView.IsRequestSending = true;
             _httpRequestCancellationTokenSource = new CancellationTokenSource();
 
-            var result = await _mediator.Send(BuildHttpRequestQuery(), _httpRequestCancellationTokenSource.Token);
+            ErrorOr<CommonHttpResponse> result = await _mediator.Send(CreateCommonHttpCommand(), _httpRequestCancellationTokenSource.Token);
 
             if (result.IsError)
             {
@@ -166,7 +161,6 @@ public class MainPresenter
             }
 
             DisplayHttpResponse(result.Value);
-
         }
         catch (OperationCanceledException)
         {
@@ -183,28 +177,30 @@ public class MainPresenter
     }
     #endregion
 
-    private ExecuteHttpRequestQuery BuildHttpRequestQuery()
+    private CommonHttpCommand CreateCommonHttpCommand()
     {
         var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
         _mainView.Url = $"{_mainView.Url}{QueryStringHelper.Generate(queryParams)}";
 
+        HttpContent? content = null;
+        content = _mainView.HasJsonBody ? new StringContent(_mainView.RequestBodyJson!) : null;
+        //content = _mainView.HasFormData ? null : null;
 
-
-        StringContent? content = null;
-        if (_mainView.HasJsonBody && !string.IsNullOrEmpty(_mainView.RequestBodyJson))
-        {
-            content = new StringContent(_mainView.RequestBodyJson!, Encoding.UTF8, DataHolder.JsonType);
-        }
-
-        return new ExecuteHttpRequestQuery(
+        return new CommonHttpCommand(
             url: _mainView.Url,
             method: _mainView.Method,
             headers: _mainView.RequestHeaders.GetDictionary(onlyEnabledRows: true),
-            content: content
+            content: content,
+            serverSslHashString: null
         );
     }
 
-    private void DisplayHttpResponse(ExecuteHttpRequestQueryResponse response)
+    private string GenerateRequestUrl()
+    {
+        var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
+        return $"{_mainView.SelectedRequestFullUrl}{QueryStringHelper.Generate(queryParams)}";
+    }
+    private void DisplayHttpResponse(CommonHttpResponse response)
     {
         _mainView.Result = new StringBuilder()
             .Append(StringFormatter.Format(response.StatusCode))

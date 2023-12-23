@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Restman.Application;
+using Restman.Application.Http;
 using Restman.Winform.Views;
 using Serilog;
 using WinformsApp = System.Windows.Forms.Application;
@@ -37,7 +38,7 @@ internal static class Program
         var mainForm = host.Services.GetRequiredService<MainForm>();
         WinformsApp.Run(mainForm);
 
-        Log.CloseAndFlush();
+        AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
     }
 
     private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)

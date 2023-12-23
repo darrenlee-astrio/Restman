@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Restman.Application.Common.Models;
+using Restman.Application.Common.Formatters;
+using Restman.Application.Common.Models.AppData;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Common.Helpers;
 using Restman.Winform.Common.Models;
@@ -39,6 +40,15 @@ public partial class MainForm : Form, IMainView
         sendHttpRequestButton.Click += (sender, e) => SendClicked?.Invoke(this, EventArgs.Empty);
         FormClosing += (sender, e) => { _presenter.Cleanup(); };
         urlTextBox.TextChanged += (sender, e) => { Url = urlTextBox.Text; };
+        requestQueryParamsDataGridView.CellValueChanged += (sender, e) => { OnRequestQueryParameterChanged?.Invoke(this, EventArgs.Empty); };
+        requestQueryParamsDataGridView.CurrentCellDirtyStateChanged += (sender, e) =>
+        {
+            if (requestQueryParamsDataGridView.IsCurrentCellDirty)
+            {
+                requestQueryParamsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        };
+
         requestBodyJsonTextBox.TextChanged += (sender, e) => { RequestBodyJson = requestBodyJsonTextBox.Text; };
         collectionComboBox.SelectedIndexChanged += (sender, e) => { SelectedCollectionName = collectionComboBox.Text; };
         requestComboBox.SelectedIndexChanged += (sender, e) => { SelectedRequestName = requestComboBox.Text; };
@@ -184,6 +194,10 @@ public partial class MainForm : Form, IMainView
     {
         get { return urlTextBox.Text; }
         set { urlTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
+    }
+    public string SelectedRequestFullUrl
+    {
+        get { return UrlFormatter.Combine(SelectedCollection.BaseUrl, SelectedRequest.EndUrl); }
     }
     public string? Content
     {
@@ -340,6 +354,7 @@ public partial class MainForm : Form, IMainView
     public event EventHandler? OnSelectedRequestNameChanged;
     public event EventHandler? OnRequestMethodChanged;
     public event EventHandler? OnRequestBodyTypeChanged;
+    public event EventHandler? OnRequestQueryParameterChanged;
     public event EventHandler? OnRequestSending;
     public event EventHandler? OnRequestCompleted;
     public event EventHandler? SendClicked;

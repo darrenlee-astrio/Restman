@@ -1,17 +1,18 @@
 ﻿using FluentValidation;
 using Restman.Application.Common.Helpers;
 
-namespace Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
+namespace Restman.Application.Http;
 
-public class ExecuteHttpRequestQueryValidator : AbstractValidator<ExecuteHttpRequestQuery>
+public class CommonHttpCommandValidator : AbstractValidator<CommonHttpCommand>
 {
-    public ExecuteHttpRequestQueryValidator()
+    public CommonHttpCommandValidator()
     {
         RuleFor(x => x.Url)
             .NotEmpty().WithMessage("Url cannot be empty.")
             .Must(BeValidUrl).WithMessage("Invalid url.");
 
         RuleFor(x => x.Method)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Method cannot be empty.")
             .Must(BeParsableToHttpMethod).WithMessage("Invalid Method.");
     }

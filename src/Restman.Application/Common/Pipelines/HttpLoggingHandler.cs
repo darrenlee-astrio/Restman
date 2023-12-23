@@ -17,21 +17,8 @@ public class HttpLoggingHandler : DelegatingHandler
     {
         _logger.LogInformation($"{request.Method} {request.RequestUri}");
 
-        if (request.Content != null)
-        {
-            string requestBody = JsonHelper.PrettifyJson(await request.Content.ReadAsStringAsync());
-            //_logger.LogInformation($"Request Body:\n {requestBody}");
-        }
-
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-
         _logger.LogInformation($"{(int)response.StatusCode} {response.StatusCode}");
-
-        if (response.Content != null)
-        {
-            string responseBody = JsonHelper.PrettifyJson(await response.Content.ReadAsStringAsync());
-            //_logger.LogInformation($"Response Body:\n {responseBody}");
-        }
 
         return response;
     }

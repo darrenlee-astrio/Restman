@@ -30,14 +30,7 @@ partial class MainForm
     {
         groupBox1 = new GroupBox();
         tabControl1 = new TabControl();
-        requestParamsTab = new TabPage();
-        queryParamsLabel = new Label();
-        requestQueryParamsDataGridView = new DataGridView();
-        requestQueryParamsDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
-        requestQueryParamsDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
-        requestQueryParamsDataGridViewValueColumn = new DataGridViewTextBoxColumn();
         requestHeadersTab = new TabPage();
-        headersLabel = new Label();
         requestHeadersDataGridView = new DataGridView();
         requestHeadersDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
         requestHeadersDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
@@ -52,6 +45,12 @@ partial class MainForm
         requestBodyJsonTab = new TabPage();
         requestBodyJsonTextBox = new RichTextBox();
         requestBodyFormDataTab = new TabPage();
+        requestParamsTab = new TabPage();
+        queryParamsLabel = new Label();
+        requestQueryParamsDataGridView = new DataGridView();
+        requestQueryParamsDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
+        requestQueryParamsDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
+        requestQueryParamsDataGridViewValueColumn = new DataGridViewTextBoxColumn();
         sendHttpRequestButton = new Button();
         urlTextBox = new TextBox();
         httpMethodsComboBox = new ComboBox();
@@ -71,16 +70,17 @@ partial class MainForm
         requestComboBox = new ComboBox();
         label3 = new Label();
         label2 = new Label();
+        sslConfigurationTab = new TabPage();
         groupBox1.SuspendLayout();
         tabControl1.SuspendLayout();
-        requestParamsTab.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).BeginInit();
         requestHeadersTab.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)requestHeadersDataGridView).BeginInit();
         requestBodyTab.SuspendLayout();
         requestBodyTabControl.SuspendLayout();
         requestBodyNoneTab.SuspendLayout();
         requestBodyJsonTab.SuspendLayout();
+        requestParamsTab.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).BeginInit();
         groupBox2.SuspendLayout();
         tabControl2.SuspendLayout();
         responseBodyTab.SuspendLayout();
@@ -107,62 +107,15 @@ partial class MainForm
         tabControl1.Controls.Add(requestHeadersTab);
         tabControl1.Controls.Add(requestBodyTab);
         tabControl1.Controls.Add(requestParamsTab);
+        tabControl1.Controls.Add(sslConfigurationTab);
         tabControl1.Location = new Point(6, 51);
         tabControl1.Name = "tabControl1";
         tabControl1.SelectedIndex = 0;
         tabControl1.Size = new Size(764, 278);
         tabControl1.TabIndex = 3;
         // 
-        // requestParamsTab
-        // 
-        requestParamsTab.Controls.Add(queryParamsLabel);
-        requestParamsTab.Controls.Add(requestQueryParamsDataGridView);
-        requestParamsTab.Location = new Point(4, 24);
-        requestParamsTab.Name = "requestParamsTab";
-        requestParamsTab.Padding = new Padding(3);
-        requestParamsTab.Size = new Size(756, 250);
-        requestParamsTab.TabIndex = 0;
-        requestParamsTab.Text = "Params";
-        requestParamsTab.UseVisualStyleBackColor = true;
-        // 
-        // queryParamsLabel
-        // 
-        queryParamsLabel.AutoSize = true;
-        queryParamsLabel.Location = new Point(6, 12);
-        queryParamsLabel.Name = "queryParamsLabel";
-        queryParamsLabel.Size = new Size(101, 15);
-        queryParamsLabel.TabIndex = 1;
-        queryParamsLabel.Text = "Query Parameters";
-        // 
-        // requestQueryParamsDataGridView
-        // 
-        requestQueryParamsDataGridView.AllowUserToAddRows = false;
-        requestQueryParamsDataGridView.AllowUserToDeleteRows = false;
-        requestQueryParamsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        requestQueryParamsDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestQueryParamsDataGridViewEnableColumn, requestQueryParamsDataGridViewKeyColumn, requestQueryParamsDataGridViewValueColumn });
-        requestQueryParamsDataGridView.Location = new Point(6, 44);
-        requestQueryParamsDataGridView.Name = "requestQueryParamsDataGridView";
-        requestQueryParamsDataGridView.Size = new Size(744, 200);
-        requestQueryParamsDataGridView.TabIndex = 0;
-        // 
-        // requestQueryParamsDataGridViewEnableColumn
-        // 
-        requestQueryParamsDataGridViewEnableColumn.HeaderText = "Enable";
-        requestQueryParamsDataGridViewEnableColumn.Name = "requestQueryParamsDataGridViewEnableColumn";
-        // 
-        // requestQueryParamsDataGridViewKeyColumn
-        // 
-        requestQueryParamsDataGridViewKeyColumn.HeaderText = "Key";
-        requestQueryParamsDataGridViewKeyColumn.Name = "requestQueryParamsDataGridViewKeyColumn";
-        // 
-        // requestQueryParamsDataGridViewValueColumn
-        // 
-        requestQueryParamsDataGridViewValueColumn.HeaderText = "Value";
-        requestQueryParamsDataGridViewValueColumn.Name = "requestQueryParamsDataGridViewValueColumn";
-        // 
         // requestHeadersTab
         // 
-        requestHeadersTab.Controls.Add(headersLabel);
         requestHeadersTab.Controls.Add(requestHeadersDataGridView);
         requestHeadersTab.Location = new Point(4, 24);
         requestHeadersTab.Name = "requestHeadersTab";
@@ -172,24 +125,16 @@ partial class MainForm
         requestHeadersTab.Text = "Headers";
         requestHeadersTab.UseVisualStyleBackColor = true;
         // 
-        // headersLabel
-        // 
-        headersLabel.AutoSize = true;
-        headersLabel.Location = new Point(6, 12);
-        headersLabel.Name = "headersLabel";
-        headersLabel.Size = new Size(50, 15);
-        headersLabel.TabIndex = 2;
-        headersLabel.Text = "Headers";
-        // 
         // requestHeadersDataGridView
         // 
         requestHeadersDataGridView.AllowUserToAddRows = false;
         requestHeadersDataGridView.AllowUserToDeleteRows = false;
         requestHeadersDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         requestHeadersDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestHeadersDataGridViewEnableColumn, requestHeadersDataGridViewKeyColumn, requestHeadersDataGridViewValueColumn });
-        requestHeadersDataGridView.Location = new Point(6, 44);
+        requestHeadersDataGridView.Dock = DockStyle.Fill;
+        requestHeadersDataGridView.Location = new Point(3, 3);
         requestHeadersDataGridView.Name = "requestHeadersDataGridView";
-        requestHeadersDataGridView.Size = new Size(744, 200);
+        requestHeadersDataGridView.Size = new Size(750, 244);
         requestHeadersDataGridView.TabIndex = 1;
         // 
         // requestHeadersDataGridViewEnableColumn
@@ -318,6 +263,52 @@ partial class MainForm
         requestBodyFormDataTab.TabIndex = 2;
         requestBodyFormDataTab.Text = "Form-Data";
         requestBodyFormDataTab.UseVisualStyleBackColor = true;
+        // 
+        // requestParamsTab
+        // 
+        requestParamsTab.Controls.Add(queryParamsLabel);
+        requestParamsTab.Controls.Add(requestQueryParamsDataGridView);
+        requestParamsTab.Location = new Point(4, 24);
+        requestParamsTab.Name = "requestParamsTab";
+        requestParamsTab.Padding = new Padding(3);
+        requestParamsTab.Size = new Size(756, 250);
+        requestParamsTab.TabIndex = 0;
+        requestParamsTab.Text = "Params";
+        requestParamsTab.UseVisualStyleBackColor = true;
+        // 
+        // queryParamsLabel
+        // 
+        queryParamsLabel.AutoSize = true;
+        queryParamsLabel.Location = new Point(6, 12);
+        queryParamsLabel.Name = "queryParamsLabel";
+        queryParamsLabel.Size = new Size(101, 15);
+        queryParamsLabel.TabIndex = 1;
+        queryParamsLabel.Text = "Query Parameters";
+        // 
+        // requestQueryParamsDataGridView
+        // 
+        requestQueryParamsDataGridView.AllowUserToDeleteRows = false;
+        requestQueryParamsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        requestQueryParamsDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestQueryParamsDataGridViewEnableColumn, requestQueryParamsDataGridViewKeyColumn, requestQueryParamsDataGridViewValueColumn });
+        requestQueryParamsDataGridView.Location = new Point(6, 44);
+        requestQueryParamsDataGridView.Name = "requestQueryParamsDataGridView";
+        requestQueryParamsDataGridView.Size = new Size(744, 200);
+        requestQueryParamsDataGridView.TabIndex = 0;
+        // 
+        // requestQueryParamsDataGridViewEnableColumn
+        // 
+        requestQueryParamsDataGridViewEnableColumn.HeaderText = "Enable";
+        requestQueryParamsDataGridViewEnableColumn.Name = "requestQueryParamsDataGridViewEnableColumn";
+        // 
+        // requestQueryParamsDataGridViewKeyColumn
+        // 
+        requestQueryParamsDataGridViewKeyColumn.HeaderText = "Key";
+        requestQueryParamsDataGridViewKeyColumn.Name = "requestQueryParamsDataGridViewKeyColumn";
+        // 
+        // requestQueryParamsDataGridViewValueColumn
+        // 
+        requestQueryParamsDataGridViewValueColumn.HeaderText = "Value";
+        requestQueryParamsDataGridViewValueColumn.Name = "requestQueryParamsDataGridViewValueColumn";
         // 
         // sendHttpRequestButton
         // 
@@ -491,6 +482,16 @@ partial class MainForm
         label2.TabIndex = 0;
         label2.Text = "Collection:";
         // 
+        // sslConfigurationTab
+        // 
+        sslConfigurationTab.Location = new Point(4, 24);
+        sslConfigurationTab.Name = "sslConfigurationTab";
+        sslConfigurationTab.Padding = new Padding(3);
+        sslConfigurationTab.Size = new Size(756, 250);
+        sslConfigurationTab.TabIndex = 3;
+        sslConfigurationTab.Text = "SSL";
+        sslConfigurationTab.UseVisualStyleBackColor = true;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -504,11 +505,7 @@ partial class MainForm
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
         tabControl1.ResumeLayout(false);
-        requestParamsTab.ResumeLayout(false);
-        requestParamsTab.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).EndInit();
         requestHeadersTab.ResumeLayout(false);
-        requestHeadersTab.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)requestHeadersDataGridView).EndInit();
         requestBodyTab.ResumeLayout(false);
         requestBodyTab.PerformLayout();
@@ -516,6 +513,9 @@ partial class MainForm
         requestBodyNoneTab.ResumeLayout(false);
         requestBodyNoneTab.PerformLayout();
         requestBodyJsonTab.ResumeLayout(false);
+        requestParamsTab.ResumeLayout(false);
+        requestParamsTab.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).EndInit();
         groupBox2.ResumeLayout(false);
         tabControl2.ResumeLayout(false);
         responseBodyTab.ResumeLayout(false);
@@ -541,7 +541,6 @@ partial class MainForm
     private TabPage requestHeadersTab;
     private Label queryParamsLabel;
     private DataGridView requestHeadersDataGridView;
-    private Label headersLabel;
     private DataGridViewCheckBoxColumn requestQueryParamsDataGridViewEnableColumn;
     private DataGridViewTextBoxColumn requestQueryParamsDataGridViewKeyColumn;
     private DataGridViewTextBoxColumn requestQueryParamsDataGridViewValueColumn;
@@ -571,4 +570,5 @@ partial class MainForm
     private Label label2;
     private Label requestDescriptionLabel;
     private Label collectionDescriptionLabel;
+    private TabPage sslConfigurationTab;
 }

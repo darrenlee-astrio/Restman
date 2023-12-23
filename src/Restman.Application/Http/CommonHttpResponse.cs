@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 
-namespace Restman.Application.HttpRequests.ExecuteHttpRequest.Queries;
+namespace Restman.Application.Http;
 
-public class ExecuteHttpRequestQueryResponse
+public class CommonHttpResponse
 {
     public HttpStatusCode StatusCode { get; set; }
     public HttpResponseHeaders Headers { get; set; } = null!;

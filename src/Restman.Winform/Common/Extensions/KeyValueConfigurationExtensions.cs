@@ -1,11 +1,11 @@
-﻿using Restman.Application.Common.Models;
+﻿using Restman.Application.Common.Models.AppData;
 using Restman.Winform.Common.Models;
 
 namespace Restman.Winform.Common.Extensions;
 
-public static class HeaderItemExtensions
+public static class KeyValueConfigurationExtensions
 {
-    public static KeyValueTwinWithEnable? ToKeyValueTwinWithEnable(this HeaderItem item)
+    public static KeyValueTwinWithEnable? ToKeyValueTwinWithEnable(this KeyValueConfiguration item)
     {
         if (item == null)
         {
@@ -20,7 +20,7 @@ public static class HeaderItemExtensions
         };
     }
 
-    public static List<KeyValueTwinWithEnable> ToKeyValueTwinsWithEnable(this List<HeaderItem> items)
+    public static List<KeyValueTwinWithEnable> ToKeyValueTwinsWithEnable(this List<KeyValueConfiguration> items)
     {
         var list = new List<KeyValueTwinWithEnable>();
 

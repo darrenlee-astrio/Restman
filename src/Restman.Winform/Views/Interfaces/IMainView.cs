@@ -1,4 +1,4 @@
-﻿using Restman.Application.Common.Models;
+﻿using Restman.Application.Common.Models.AppData;
 using Restman.Winform.Common.Models;
 
 namespace Restman.Winform.Views.Interfaces;
@@ -14,7 +14,7 @@ public interface IMainView
     List<string> RequestNames { get; set; }
     string SelectedCollectionName { get; set; }
     string SelectedRequestName { get; set; }
-
+    string SelectedRequestFullUrl { get; }
 
     string Method { get; set; }
     string Url { get; set; }
@@ -41,6 +41,7 @@ public interface IMainView
     event EventHandler OnSelectedRequestNameChanged;
     event EventHandler OnRequestMethodChanged;
     event EventHandler OnRequestBodyTypeChanged;
+    event EventHandler OnRequestQueryParameterChanged;
 
     event EventHandler OnRequestSending;
     event EventHandler OnRequestCompleted;

@@ -1,7 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Restman.Application;
-using Restman.Application.Http;
 using Restman.Winform.Views;
 using Serilog;
 using WinformsApp = System.Windows.Forms.Application;
@@ -20,24 +19,24 @@ internal static class Program
         WinformsApp.EnableVisualStyles();
         WinformsApp.SetCompatibleTextRenderingDefault(false);
 
-        // Set up global exception handling
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         WinformsApp.ThreadException += Application_ThreadException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
-        var logForm = new LogForm();
-
-        using var host = Host.CreateDefaultBuilder()
-            .ConfigureServices((context, services) =>
-            {
-                services.AddWinform();
-                services.AddApplication();
-            })
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
-        var mainForm = host.Services.GetRequiredService<MainForm>();
-        WinformsApp.Run(mainForm);
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton<IConfiguration>(configuration)
+            .AddOptions(configuration)
+            .AddWinform(configuration)
+            .AddApplication(configuration)
+            .BuildServiceProvider();
 
+        var mainForm = serviceProvider.GetRequiredService<MainForm>();
+        WinformsApp.Run(mainForm);
         AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
     }
 
@@ -45,12 +44,10 @@ internal static class Program
     {
         HandleException(e.Exception);
     }
-
     private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
     {
         HandleException(e.Exception);
     }
-
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         Exception? exception = e.ExceptionObject as Exception;
@@ -62,7 +59,6 @@ internal static class Program
 
         HandleException(exception);
     }
-
     private static void HandleException(Exception exception)
     {
         var errorMessage = $"An unexpected error occurred: {exception}";

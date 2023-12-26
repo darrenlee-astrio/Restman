@@ -180,18 +180,18 @@ public class MainPresenter
     private CommonHttpCommand CreateCommonHttpCommand()
     {
         var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
-        _mainView.Url = $"{_mainView.Url}{QueryStringHelper.Generate(queryParams)}";
+        _mainView.Url = GenerateRequestUrl();
 
         HttpContent? content = null;
         content = _mainView.HasJsonBody ? new StringContent(_mainView.RequestBodyJson!) : null;
         //content = _mainView.HasFormData ? null : null;
 
         return new CommonHttpCommand(
+            collectionId: _mainView.SelectedCollection.Id,
             url: _mainView.Url,
             method: _mainView.Method,
             headers: _mainView.RequestHeaders.GetDictionary(onlyEnabledRows: true),
-            content: content,
-            serverSslHashString: null
+            content: content
         );
     }
 

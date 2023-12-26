@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Restman.Application.Common.Formatters;
+﻿namespace Restman.Application.Common.Formatters;
 
 public static class UrlFormatter
 {

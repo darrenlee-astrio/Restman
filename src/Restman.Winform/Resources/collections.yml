@@ -1,4 +1,5 @@
-- name: Reqres
+- id: Reqres
+  name: Reqres
   base-url: https://reqres.in
   description: A sample api for testing
   default-headers:

@@ -70,7 +70,6 @@ partial class MainForm
         requestComboBox = new ComboBox();
         label3 = new Label();
         label2 = new Label();
-        sslConfigurationTab = new TabPage();
         groupBox1.SuspendLayout();
         tabControl1.SuspendLayout();
         requestHeadersTab.SuspendLayout();
@@ -107,7 +106,6 @@ partial class MainForm
         tabControl1.Controls.Add(requestHeadersTab);
         tabControl1.Controls.Add(requestBodyTab);
         tabControl1.Controls.Add(requestParamsTab);
-        tabControl1.Controls.Add(sslConfigurationTab);
         tabControl1.Location = new Point(6, 51);
         tabControl1.Name = "tabControl1";
         tabControl1.SelectedIndex = 0;
@@ -482,16 +480,6 @@ partial class MainForm
         label2.TabIndex = 0;
         label2.Text = "Collection:";
         // 
-        // sslConfigurationTab
-        // 
-        sslConfigurationTab.Location = new Point(4, 24);
-        sslConfigurationTab.Name = "sslConfigurationTab";
-        sslConfigurationTab.Padding = new Padding(3);
-        sslConfigurationTab.Size = new Size(756, 250);
-        sslConfigurationTab.TabIndex = 3;
-        sslConfigurationTab.Text = "SSL";
-        sslConfigurationTab.UseVisualStyleBackColor = true;
-        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -570,5 +558,4 @@ partial class MainForm
     private Label label2;
     private Label requestDescriptionLabel;
     private Label collectionDescriptionLabel;
-    private TabPage sslConfigurationTab;
 }

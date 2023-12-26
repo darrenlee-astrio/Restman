@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Restman.Application.Common.Helpers;
 
 namespace Restman.Application.Common.Pipelines;
 

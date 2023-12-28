@@ -2,11 +2,15 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Restman.Application.Common.Constants;
+using Restman.Application.Common.Extensions;
 using Restman.Application.Common.Formatters;
 using Restman.Application.Common.Helpers;
+using Restman.Application.Common.Models.AppData.Configuration;
 using Restman.Application.Http;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Views.Interfaces;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Restman.Winform.Presenters;
@@ -30,7 +34,7 @@ public class MainPresenter
         _mainView.OnRequestMethodChanged += OnRequestMethodChanged;
         _mainView.OnRequestBodyTypeChanged += OnRequestBodyTypeChanged;
         _mainView.OnRequestQueryParameterChanged += OnRequestQueryParameterChanged;
-
+        _mainView.OnHeaderConfigurationChanged += OnHeaderConfigurationChanged;
         _mainView.OnRequestSending += OnRequestSending;
         _mainView.OnRequestCompleted += OnRequestCompleted;
         _mainView.SendClicked += SendHttpRequest;
@@ -52,7 +56,6 @@ public class MainPresenter
         _mainView.SelectedCollection = _mainView.Collections.First();
         _mainView.SelectedCollectionName = _mainView.SelectedCollection.Name;
         _mainView.SelectedCollectionDescription = _mainView.SelectedCollection.Description;
-
     }
     private void OnSelectedCollectionNameChanged(object? sender, EventArgs e)
     {
@@ -65,24 +68,32 @@ public class MainPresenter
     {
         _mainView.SelectedRequest = _mainView.Requests.Where(x => x.Name == _mainView.SelectedRequestName).First();
         _mainView.Method = _mainView.SelectedRequest.Method;
-        _mainView.RequestQueryParameters = _mainView.SelectedRequest.QueryParams.ToKeyValueTwinsWithEnable();
+        _mainView.QueryParameterConfigurations = _mainView.SelectedRequest.QueryParameterConfigurations;
         _mainView.Url = GenerateRequestUrl();
         _mainView.SelectedRequestDescription = _mainView.SelectedRequest.Description;
+        _mainView.HeaderConfigurations = _mainView.SelectedRequest.HeaderConfigurations;
 
-        var collectionDefaultHeaders = _mainView.SelectedCollection.DefaultHeaders.ToKeyValueTwinsWithEnable();
-        var requestHeaders = _mainView.SelectedRequest.Headers.ToKeyValueTwinsWithEnable();
-        _mainView.RequestHeaders = collectionDefaultHeaders.Combine(requestHeaders);
-
-        if (!string.IsNullOrEmpty(_mainView.SelectedRequest.JsonContent))
+        if (!string.IsNullOrEmpty(_mainView.SelectedRequest.JsonConfiguration))
         {
             _mainView.HasJsonBody = true;
-            _mainView.RequestBodyJson = _mainView.SelectedRequest.JsonContent;
+            _mainView.JsonConfiguration = _mainView.SelectedRequest.JsonConfiguration;
         }
         else
         {
             _mainView.HasNoBody = true;
-            _mainView.RequestBodyJson = string.Empty;
+            _mainView.JsonConfiguration = string.Empty;
         }
+
+        if (_mainView.SelectedRequest.FormDataConfiguration.Count > 0)
+        {
+            _mainView.HasFormData = true;
+            _mainView.FormDataConfigurations = _mainView.SelectedRequest.FormDataConfiguration;
+        }
+
+        _mainView.SavedQueryParameterConfigurations = _mainView.QueryParameterConfigurations;
+        _mainView.SavedHeaderConfigurations = _mainView.HeaderConfigurations;
+        _mainView.SavedJsonConfiguration = _mainView.JsonConfiguration;
+        _mainView.SavedFormDataConfigurations = _mainView.FormDataConfigurations;
     }
     private void OnRequestBodyTypeChanged(object? sender, EventArgs e)
     {
@@ -113,8 +124,14 @@ public class MainPresenter
     }
     private void OnRequestQueryParameterChanged(object? sender, EventArgs e)
     {
+        _mainView.SelectedRequest.QueryParameterConfigurations = _mainView.QueryParameterConfigurations;
         _mainView.Url = GenerateRequestUrl();
     }
+    private void OnHeaderConfigurationChanged(object? sender, EventArgs e)
+    {
+        _mainView.SelectedRequest.HeaderConfigurations = _mainView.HeaderConfigurations;
+    }
+
     private void OnRequestSending(object? sender, EventArgs e)
     {
         if (_mainView.IsRequestSending)
@@ -179,25 +196,64 @@ public class MainPresenter
 
     private CommonHttpCommand CreateCommonHttpCommand()
     {
-        var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
         _mainView.Url = GenerateRequestUrl();
 
         HttpContent? content = null;
-        content = _mainView.HasJsonBody ? new StringContent(_mainView.RequestBodyJson!) : null;
-        //content = _mainView.HasFormData ? null : null;
+        content = _mainView.HasJsonBody ? new StringContent(_mainView.JsonConfiguration!) : null;
+        content = _mainView.HasFormData ? CreateMultipartFormDataContent(_mainView.FormDataConfigurations) : null;
 
         return new CommonHttpCommand(
             collectionId: _mainView.SelectedCollection.Id,
             url: _mainView.Url,
             method: _mainView.Method,
-            headers: _mainView.RequestHeaders.GetDictionary(onlyEnabledRows: true),
+            headers: _mainView.HeaderConfigurations.GetDictionary(omitDisabled: true),
             content: content
         );
     }
 
+    private MultipartFormDataContent CreateMultipartFormDataContent(List<FormDataConfiguration> items)
+    {
+        var formData = new MultipartFormDataContent();
+
+        foreach (var item in items)
+        {
+            if (item.Type == "file")
+            {
+                if (File.Exists(item.Value) is false)
+                {
+                    throw new FileNotFoundException("The specified file could not be found.", item.Value);
+                }
+
+                var fileExtension = Path.GetExtension(item.Value);
+
+                using (var fileStream = File.OpenRead(item.Value))
+                {
+                    var fileContent = new StreamContent(fileStream);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(GetContentType(fileExtension));
+                    formData.Add(fileContent, item.Key, $"{item.Key}{fileExtension}");
+                }
+            }
+            else if (item.Type == "text")
+            {
+                formData.Add(new StringContent(item.Value), item.Key);
+            }
+        }
+        return formData;
+    }
+
+    private string GetContentType(string fileExtension)
+    {
+        if (Mappings.ContentType.TryGetValue(fileExtension, out var contentType))
+        {
+            return contentType;
+        }
+
+        throw new NotSupportedException($"Unable to generate content type for {fileExtension}.");
+    }
+
     private string GenerateRequestUrl()
     {
-        var queryParams = _mainView.RequestQueryParameters.GetDictionary(onlyEnabledRows: true);
+        var queryParams = _mainView.QueryParameterConfigurations.GetDictionary(omitDisabled: true);
         return $"{_mainView.SelectedRequestFullUrl}{QueryStringHelper.Generate(queryParams)}";
     }
     private void DisplayHttpResponse(CommonHttpResponse response)
@@ -207,8 +263,7 @@ public class MainPresenter
             .Append("  |  ")
             .Append(StringFormatter.Format(response.ElapsedTime))
             .ToString();
-        _mainView.ResponseHeaders = response.Headers.ToKeyValueTwin();
-        _mainView.ResponseBodyJson = JsonHelper.PrettifyJson(response.Content);
+        _mainView.ResponseHeaders = response.Headers.ToKeyValueConfigurations();
+        _mainView.JsonResponse = JsonHelper.PrettifyJson(response.Content);
     }
-
 }

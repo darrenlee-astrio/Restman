@@ -12,9 +12,9 @@ public class CollectionId
 {
     public const string Reqres = "Reqres";
 
-    public static List<string> All => new List<string>() 
-    { 
-        Reqres 
+    public static List<string> All => new List<string>()
+    {
+        Reqres
     };
 
 }

@@ -30,7 +30,7 @@ internal static class Program
 
         var serviceProvider = new ServiceCollection()
             .AddSingleton<IConfiguration>(configuration)
-            .AddOptions(configuration)
+            .AddConfiguration(configuration)
             .AddWinform(configuration)
             .AddApplication(configuration)
             .BuildServiceProvider();

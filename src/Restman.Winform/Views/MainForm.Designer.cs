@@ -31,38 +31,39 @@ partial class MainForm
         groupBox1 = new GroupBox();
         tabControl1 = new TabControl();
         requestHeadersTab = new TabPage();
-        requestHeadersDataGridView = new DataGridView();
-        requestHeadersDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
-        requestHeadersDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
-        requestHeadersDataGridViewValueColumn = new DataGridViewTextBoxColumn();
+        headerConfigurationDataGridView = new DataGridView();
         requestBodyTab = new TabPage();
         formDataRequestBodyRadioButton = new RadioButton();
         jsonRequestBodyRadioButton = new RadioButton();
         noRequestBodyRadioButton = new RadioButton();
-        requestBodyTabControl = new TabControl();
-        requestBodyNoneTab = new TabPage();
+        bodyConfigurationTabControl = new TabControl();
+        noBodyTab = new TabPage();
         label1 = new Label();
-        requestBodyJsonTab = new TabPage();
-        requestBodyJsonTextBox = new RichTextBox();
-        requestBodyFormDataTab = new TabPage();
+        jsonConfigurationTabPage = new TabPage();
+        jsonConfigurationTextBox = new RichTextBox();
+        formDataConfigurationTab = new TabPage();
+        formDataConfigurationDataGridView = new DataGridView();
+        requestBodyFormDataDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
+        requestBodyFormDataDataGridViewComboBoxColumn = new DataGridViewComboBoxColumn();
+        requestBodyFormDataDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
+        requestBodyFormDataDataGridViewValueColumn = new DataGridViewTextBoxColumn();
         requestParamsTab = new TabPage();
-        queryParamsLabel = new Label();
-        requestQueryParamsDataGridView = new DataGridView();
+        queryParameterConfigurationsDataGridView = new DataGridView();
         requestQueryParamsDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
         requestQueryParamsDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
         requestQueryParamsDataGridViewValueColumn = new DataGridViewTextBoxColumn();
-        sendHttpRequestButton = new Button();
+        sendRequestButton = new Button();
         urlTextBox = new TextBox();
-        httpMethodsComboBox = new ComboBox();
+        methodsComboBox = new ComboBox();
         groupBox2 = new GroupBox();
         tabControl2 = new TabControl();
-        responseBodyTab = new TabPage();
-        httpResponseTextBox = new RichTextBox();
+        jsonResponseTab = new TabPage();
+        jsonResponseTextBox = new RichTextBox();
         responseHeadersTab = new TabPage();
         responseHeadersDataGridView = new DataGridView();
         responseHeadersDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
         responseHeadersDataGridViewValueColumn = new DataGridViewTextBoxColumn();
-        httpResponseResultLabel = new Label();
+        responseResultLabel = new Label();
         groupBox3 = new GroupBox();
         requestDescriptionLabel = new Label();
         collectionDescriptionLabel = new Label();
@@ -70,31 +71,41 @@ partial class MainForm
         requestComboBox = new ComboBox();
         label3 = new Label();
         label2 = new Label();
+        menuStrip1 = new MenuStrip();
+        fileToolStripMenuItem = new ToolStripMenuItem();
+        saveToolStripMenuItem = new ToolStripMenuItem();
+        exitToolStripMenuItem = new ToolStripMenuItem();
+        headerConfigurationsDataGridViewEnableColumn = new DataGridViewCheckBoxColumn();
+        headerConfigurationsDataGridViewKeyColumn = new DataGridViewTextBoxColumn();
+        headerConfigurationsDataGridViewValueColumn = new DataGridViewTextBoxColumn();
         groupBox1.SuspendLayout();
         tabControl1.SuspendLayout();
         requestHeadersTab.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)requestHeadersDataGridView).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)headerConfigurationDataGridView).BeginInit();
         requestBodyTab.SuspendLayout();
-        requestBodyTabControl.SuspendLayout();
-        requestBodyNoneTab.SuspendLayout();
-        requestBodyJsonTab.SuspendLayout();
+        bodyConfigurationTabControl.SuspendLayout();
+        noBodyTab.SuspendLayout();
+        jsonConfigurationTabPage.SuspendLayout();
+        formDataConfigurationTab.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)formDataConfigurationDataGridView).BeginInit();
         requestParamsTab.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)queryParameterConfigurationsDataGridView).BeginInit();
         groupBox2.SuspendLayout();
         tabControl2.SuspendLayout();
-        responseBodyTab.SuspendLayout();
+        jsonResponseTab.SuspendLayout();
         responseHeadersTab.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)responseHeadersDataGridView).BeginInit();
         groupBox3.SuspendLayout();
+        menuStrip1.SuspendLayout();
         SuspendLayout();
         // 
         // groupBox1
         // 
         groupBox1.Controls.Add(tabControl1);
-        groupBox1.Controls.Add(sendHttpRequestButton);
+        groupBox1.Controls.Add(sendRequestButton);
         groupBox1.Controls.Add(urlTextBox);
-        groupBox1.Controls.Add(httpMethodsComboBox);
-        groupBox1.Location = new Point(12, 98);
+        groupBox1.Controls.Add(methodsComboBox);
+        groupBox1.Location = new Point(10, 113);
         groupBox1.Name = "groupBox1";
         groupBox1.Size = new Size(776, 335);
         groupBox1.TabIndex = 0;
@@ -114,7 +125,7 @@ partial class MainForm
         // 
         // requestHeadersTab
         // 
-        requestHeadersTab.Controls.Add(requestHeadersDataGridView);
+        requestHeadersTab.Controls.Add(headerConfigurationDataGridView);
         requestHeadersTab.Location = new Point(4, 24);
         requestHeadersTab.Name = "requestHeadersTab";
         requestHeadersTab.Padding = new Padding(3);
@@ -123,39 +134,24 @@ partial class MainForm
         requestHeadersTab.Text = "Headers";
         requestHeadersTab.UseVisualStyleBackColor = true;
         // 
-        // requestHeadersDataGridView
+        // headerConfigurationDataGridView
         // 
-        requestHeadersDataGridView.AllowUserToAddRows = false;
-        requestHeadersDataGridView.AllowUserToDeleteRows = false;
-        requestHeadersDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        requestHeadersDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestHeadersDataGridViewEnableColumn, requestHeadersDataGridViewKeyColumn, requestHeadersDataGridViewValueColumn });
-        requestHeadersDataGridView.Dock = DockStyle.Fill;
-        requestHeadersDataGridView.Location = new Point(3, 3);
-        requestHeadersDataGridView.Name = "requestHeadersDataGridView";
-        requestHeadersDataGridView.Size = new Size(750, 244);
-        requestHeadersDataGridView.TabIndex = 1;
-        // 
-        // requestHeadersDataGridViewEnableColumn
-        // 
-        requestHeadersDataGridViewEnableColumn.HeaderText = "Enable";
-        requestHeadersDataGridViewEnableColumn.Name = "requestHeadersDataGridViewEnableColumn";
-        // 
-        // requestHeadersDataGridViewKeyColumn
-        // 
-        requestHeadersDataGridViewKeyColumn.HeaderText = "Key";
-        requestHeadersDataGridViewKeyColumn.Name = "requestHeadersDataGridViewKeyColumn";
-        // 
-        // requestHeadersDataGridViewValueColumn
-        // 
-        requestHeadersDataGridViewValueColumn.HeaderText = "Value";
-        requestHeadersDataGridViewValueColumn.Name = "requestHeadersDataGridViewValueColumn";
+        headerConfigurationDataGridView.AllowUserToAddRows = false;
+        headerConfigurationDataGridView.AllowUserToDeleteRows = false;
+        headerConfigurationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        headerConfigurationDataGridView.Columns.AddRange(new DataGridViewColumn[] { headerConfigurationsDataGridViewEnableColumn, headerConfigurationsDataGridViewKeyColumn, headerConfigurationsDataGridViewValueColumn });
+        headerConfigurationDataGridView.Dock = DockStyle.Fill;
+        headerConfigurationDataGridView.Location = new Point(3, 3);
+        headerConfigurationDataGridView.Name = "headerConfigurationDataGridView";
+        headerConfigurationDataGridView.Size = new Size(750, 244);
+        headerConfigurationDataGridView.TabIndex = 1;
         // 
         // requestBodyTab
         // 
         requestBodyTab.Controls.Add(formDataRequestBodyRadioButton);
         requestBodyTab.Controls.Add(jsonRequestBodyRadioButton);
         requestBodyTab.Controls.Add(noRequestBodyRadioButton);
-        requestBodyTab.Controls.Add(requestBodyTabControl);
+        requestBodyTab.Controls.Add(bodyConfigurationTabControl);
         requestBodyTab.Location = new Point(4, 24);
         requestBodyTab.Name = "requestBodyTab";
         requestBodyTab.Size = new Size(756, 250);
@@ -199,73 +195,105 @@ partial class MainForm
         noRequestBodyRadioButton.Text = "None";
         noRequestBodyRadioButton.UseVisualStyleBackColor = true;
         // 
-        // requestBodyTabControl
+        // bodyConfigurationTabControl
         // 
-        requestBodyTabControl.Controls.Add(requestBodyNoneTab);
-        requestBodyTabControl.Controls.Add(requestBodyJsonTab);
-        requestBodyTabControl.Controls.Add(requestBodyFormDataTab);
-        requestBodyTabControl.ItemSize = new Size(0, 1);
-        requestBodyTabControl.Location = new Point(0, 36);
-        requestBodyTabControl.Name = "requestBodyTabControl";
-        requestBodyTabControl.SelectedIndex = 0;
-        requestBodyTabControl.Size = new Size(756, 214);
-        requestBodyTabControl.SizeMode = TabSizeMode.Fixed;
-        requestBodyTabControl.TabIndex = 0;
+        bodyConfigurationTabControl.Controls.Add(noBodyTab);
+        bodyConfigurationTabControl.Controls.Add(jsonConfigurationTabPage);
+        bodyConfigurationTabControl.Controls.Add(formDataConfigurationTab);
+        bodyConfigurationTabControl.ItemSize = new Size(1, 15);
+        bodyConfigurationTabControl.Location = new Point(0, 36);
+        bodyConfigurationTabControl.Name = "bodyConfigurationTabControl";
+        bodyConfigurationTabControl.SelectedIndex = 0;
+        bodyConfigurationTabControl.Size = new Size(756, 214);
+        bodyConfigurationTabControl.TabIndex = 0;
         // 
-        // requestBodyNoneTab
+        // noBodyTab
         // 
-        requestBodyNoneTab.BackColor = Color.LightGray;
-        requestBodyNoneTab.Controls.Add(label1);
-        requestBodyNoneTab.Location = new Point(4, 5);
-        requestBodyNoneTab.Name = "requestBodyNoneTab";
-        requestBodyNoneTab.Padding = new Padding(3);
-        requestBodyNoneTab.Size = new Size(748, 205);
-        requestBodyNoneTab.TabIndex = 0;
-        requestBodyNoneTab.Text = "None";
+        noBodyTab.BackColor = Color.LightGray;
+        noBodyTab.Controls.Add(label1);
+        noBodyTab.Location = new Point(4, 19);
+        noBodyTab.Name = "noBodyTab";
+        noBodyTab.Padding = new Padding(3);
+        noBodyTab.Size = new Size(748, 191);
+        noBodyTab.TabIndex = 0;
+        noBodyTab.Text = "None";
         // 
         // label1
         // 
         label1.Anchor = AnchorStyles.None;
         label1.AutoSize = true;
-        label1.Location = new Point(277, 98);
+        label1.Location = new Point(277, 91);
         label1.Name = "label1";
         label1.Size = new Size(189, 15);
         label1.TabIndex = 0;
         label1.Text = "This request does not have a body.";
         // 
-        // requestBodyJsonTab
+        // jsonConfigurationTabPage
         // 
-        requestBodyJsonTab.Controls.Add(requestBodyJsonTextBox);
-        requestBodyJsonTab.Location = new Point(4, 5);
-        requestBodyJsonTab.Name = "requestBodyJsonTab";
-        requestBodyJsonTab.Padding = new Padding(3);
-        requestBodyJsonTab.Size = new Size(748, 205);
-        requestBodyJsonTab.TabIndex = 1;
-        requestBodyJsonTab.Text = "Json";
-        requestBodyJsonTab.UseVisualStyleBackColor = true;
+        jsonConfigurationTabPage.Controls.Add(jsonConfigurationTextBox);
+        jsonConfigurationTabPage.Location = new Point(4, 19);
+        jsonConfigurationTabPage.Name = "jsonConfigurationTabPage";
+        jsonConfigurationTabPage.Padding = new Padding(3);
+        jsonConfigurationTabPage.Size = new Size(748, 191);
+        jsonConfigurationTabPage.TabIndex = 1;
+        jsonConfigurationTabPage.Text = "Json";
+        jsonConfigurationTabPage.UseVisualStyleBackColor = true;
         // 
-        // requestBodyJsonTextBox
+        // jsonConfigurationTextBox
         // 
-        requestBodyJsonTextBox.Dock = DockStyle.Fill;
-        requestBodyJsonTextBox.Location = new Point(3, 3);
-        requestBodyJsonTextBox.Name = "requestBodyJsonTextBox";
-        requestBodyJsonTextBox.Size = new Size(742, 199);
-        requestBodyJsonTextBox.TabIndex = 0;
-        requestBodyJsonTextBox.Text = "";
+        jsonConfigurationTextBox.Dock = DockStyle.Fill;
+        jsonConfigurationTextBox.Location = new Point(3, 3);
+        jsonConfigurationTextBox.Name = "jsonConfigurationTextBox";
+        jsonConfigurationTextBox.Size = new Size(742, 185);
+        jsonConfigurationTextBox.TabIndex = 0;
+        jsonConfigurationTextBox.Text = "";
         // 
-        // requestBodyFormDataTab
+        // formDataConfigurationTab
         // 
-        requestBodyFormDataTab.Location = new Point(4, 5);
-        requestBodyFormDataTab.Name = "requestBodyFormDataTab";
-        requestBodyFormDataTab.Size = new Size(748, 205);
-        requestBodyFormDataTab.TabIndex = 2;
-        requestBodyFormDataTab.Text = "Form-Data";
-        requestBodyFormDataTab.UseVisualStyleBackColor = true;
+        formDataConfigurationTab.Controls.Add(formDataConfigurationDataGridView);
+        formDataConfigurationTab.Location = new Point(4, 19);
+        formDataConfigurationTab.Name = "formDataConfigurationTab";
+        formDataConfigurationTab.Size = new Size(748, 191);
+        formDataConfigurationTab.TabIndex = 2;
+        formDataConfigurationTab.Text = "Form-Data";
+        formDataConfigurationTab.UseVisualStyleBackColor = true;
+        // 
+        // formDataConfigurationDataGridView
+        // 
+        formDataConfigurationDataGridView.AllowUserToAddRows = false;
+        formDataConfigurationDataGridView.AllowUserToDeleteRows = false;
+        formDataConfigurationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        formDataConfigurationDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestBodyFormDataDataGridViewEnableColumn, requestBodyFormDataDataGridViewComboBoxColumn, requestBodyFormDataDataGridViewKeyColumn, requestBodyFormDataDataGridViewValueColumn });
+        formDataConfigurationDataGridView.Dock = DockStyle.Fill;
+        formDataConfigurationDataGridView.Location = new Point(0, 0);
+        formDataConfigurationDataGridView.Name = "formDataConfigurationDataGridView";
+        formDataConfigurationDataGridView.Size = new Size(748, 191);
+        formDataConfigurationDataGridView.TabIndex = 2;
+        // 
+        // requestBodyFormDataDataGridViewEnableColumn
+        // 
+        requestBodyFormDataDataGridViewEnableColumn.HeaderText = "Enable";
+        requestBodyFormDataDataGridViewEnableColumn.Name = "requestBodyFormDataDataGridViewEnableColumn";
+        // 
+        // requestBodyFormDataDataGridViewComboBoxColumn
+        // 
+        requestBodyFormDataDataGridViewComboBoxColumn.HeaderText = "Type";
+        requestBodyFormDataDataGridViewComboBoxColumn.Items.AddRange(new object[] { "Text", "File" });
+        requestBodyFormDataDataGridViewComboBoxColumn.Name = "requestBodyFormDataDataGridViewComboBoxColumn";
+        // 
+        // requestBodyFormDataDataGridViewKeyColumn
+        // 
+        requestBodyFormDataDataGridViewKeyColumn.HeaderText = "Key";
+        requestBodyFormDataDataGridViewKeyColumn.Name = "requestBodyFormDataDataGridViewKeyColumn";
+        // 
+        // requestBodyFormDataDataGridViewValueColumn
+        // 
+        requestBodyFormDataDataGridViewValueColumn.HeaderText = "Value";
+        requestBodyFormDataDataGridViewValueColumn.Name = "requestBodyFormDataDataGridViewValueColumn";
         // 
         // requestParamsTab
         // 
-        requestParamsTab.Controls.Add(queryParamsLabel);
-        requestParamsTab.Controls.Add(requestQueryParamsDataGridView);
+        requestParamsTab.Controls.Add(queryParameterConfigurationsDataGridView);
         requestParamsTab.Location = new Point(4, 24);
         requestParamsTab.Name = "requestParamsTab";
         requestParamsTab.Padding = new Padding(3);
@@ -274,24 +302,16 @@ partial class MainForm
         requestParamsTab.Text = "Params";
         requestParamsTab.UseVisualStyleBackColor = true;
         // 
-        // queryParamsLabel
+        // queryParameterConfigurationsDataGridView
         // 
-        queryParamsLabel.AutoSize = true;
-        queryParamsLabel.Location = new Point(6, 12);
-        queryParamsLabel.Name = "queryParamsLabel";
-        queryParamsLabel.Size = new Size(101, 15);
-        queryParamsLabel.TabIndex = 1;
-        queryParamsLabel.Text = "Query Parameters";
-        // 
-        // requestQueryParamsDataGridView
-        // 
-        requestQueryParamsDataGridView.AllowUserToDeleteRows = false;
-        requestQueryParamsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        requestQueryParamsDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestQueryParamsDataGridViewEnableColumn, requestQueryParamsDataGridViewKeyColumn, requestQueryParamsDataGridViewValueColumn });
-        requestQueryParamsDataGridView.Location = new Point(6, 44);
-        requestQueryParamsDataGridView.Name = "requestQueryParamsDataGridView";
-        requestQueryParamsDataGridView.Size = new Size(744, 200);
-        requestQueryParamsDataGridView.TabIndex = 0;
+        queryParameterConfigurationsDataGridView.AllowUserToDeleteRows = false;
+        queryParameterConfigurationsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        queryParameterConfigurationsDataGridView.Columns.AddRange(new DataGridViewColumn[] { requestQueryParamsDataGridViewEnableColumn, requestQueryParamsDataGridViewKeyColumn, requestQueryParamsDataGridViewValueColumn });
+        queryParameterConfigurationsDataGridView.Dock = DockStyle.Fill;
+        queryParameterConfigurationsDataGridView.Location = new Point(3, 3);
+        queryParameterConfigurationsDataGridView.Name = "queryParameterConfigurationsDataGridView";
+        queryParameterConfigurationsDataGridView.Size = new Size(750, 244);
+        queryParameterConfigurationsDataGridView.TabIndex = 0;
         // 
         // requestQueryParamsDataGridViewEnableColumn
         // 
@@ -308,14 +328,14 @@ partial class MainForm
         requestQueryParamsDataGridViewValueColumn.HeaderText = "Value";
         requestQueryParamsDataGridViewValueColumn.Name = "requestQueryParamsDataGridViewValueColumn";
         // 
-        // sendHttpRequestButton
+        // sendRequestButton
         // 
-        sendHttpRequestButton.Location = new Point(657, 21);
-        sendHttpRequestButton.Name = "sendHttpRequestButton";
-        sendHttpRequestButton.Size = new Size(109, 24);
-        sendHttpRequestButton.TabIndex = 2;
-        sendHttpRequestButton.Text = "Send";
-        sendHttpRequestButton.UseVisualStyleBackColor = true;
+        sendRequestButton.Location = new Point(657, 21);
+        sendRequestButton.Name = "sendRequestButton";
+        sendRequestButton.Size = new Size(109, 24);
+        sendRequestButton.TabIndex = 2;
+        sendRequestButton.Text = "Send";
+        sendRequestButton.UseVisualStyleBackColor = true;
         // 
         // urlTextBox
         // 
@@ -324,30 +344,30 @@ partial class MainForm
         urlTextBox.Size = new Size(522, 23);
         urlTextBox.TabIndex = 1;
         // 
-        // httpMethodsComboBox
+        // methodsComboBox
         // 
-        httpMethodsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-        httpMethodsComboBox.Enabled = false;
-        httpMethodsComboBox.FormattingEnabled = true;
-        httpMethodsComboBox.Location = new Point(6, 22);
-        httpMethodsComboBox.Name = "httpMethodsComboBox";
-        httpMethodsComboBox.Size = new Size(121, 23);
-        httpMethodsComboBox.TabIndex = 0;
+        methodsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        methodsComboBox.Enabled = false;
+        methodsComboBox.FormattingEnabled = true;
+        methodsComboBox.Location = new Point(6, 22);
+        methodsComboBox.Name = "methodsComboBox";
+        methodsComboBox.Size = new Size(121, 23);
+        methodsComboBox.TabIndex = 0;
         // 
         // groupBox2
         // 
         groupBox2.Controls.Add(tabControl2);
-        groupBox2.Controls.Add(httpResponseResultLabel);
-        groupBox2.Location = new Point(12, 439);
+        groupBox2.Controls.Add(responseResultLabel);
+        groupBox2.Location = new Point(12, 454);
         groupBox2.Name = "groupBox2";
-        groupBox2.Size = new Size(776, 280);
+        groupBox2.Size = new Size(774, 280);
         groupBox2.TabIndex = 3;
         groupBox2.TabStop = false;
         groupBox2.Text = "Response";
         // 
         // tabControl2
         // 
-        tabControl2.Controls.Add(responseBodyTab);
+        tabControl2.Controls.Add(jsonResponseTab);
         tabControl2.Controls.Add(responseHeadersTab);
         tabControl2.Location = new Point(10, 36);
         tabControl2.Name = "tabControl2";
@@ -355,25 +375,25 @@ partial class MainForm
         tabControl2.Size = new Size(756, 238);
         tabControl2.TabIndex = 2;
         // 
-        // responseBodyTab
+        // jsonResponseTab
         // 
-        responseBodyTab.Controls.Add(httpResponseTextBox);
-        responseBodyTab.Location = new Point(4, 24);
-        responseBodyTab.Name = "responseBodyTab";
-        responseBodyTab.Padding = new Padding(3);
-        responseBodyTab.Size = new Size(748, 210);
-        responseBodyTab.TabIndex = 0;
-        responseBodyTab.Text = "Body";
-        responseBodyTab.UseVisualStyleBackColor = true;
+        jsonResponseTab.Controls.Add(jsonResponseTextBox);
+        jsonResponseTab.Location = new Point(4, 24);
+        jsonResponseTab.Name = "jsonResponseTab";
+        jsonResponseTab.Padding = new Padding(3);
+        jsonResponseTab.Size = new Size(748, 210);
+        jsonResponseTab.TabIndex = 0;
+        jsonResponseTab.Text = "Body";
+        jsonResponseTab.UseVisualStyleBackColor = true;
         // 
-        // httpResponseTextBox
+        // jsonResponseTextBox
         // 
-        httpResponseTextBox.Dock = DockStyle.Fill;
-        httpResponseTextBox.Location = new Point(3, 3);
-        httpResponseTextBox.Name = "httpResponseTextBox";
-        httpResponseTextBox.Size = new Size(742, 204);
-        httpResponseTextBox.TabIndex = 0;
-        httpResponseTextBox.Text = "";
+        jsonResponseTextBox.Dock = DockStyle.Fill;
+        jsonResponseTextBox.Location = new Point(3, 3);
+        jsonResponseTextBox.Name = "jsonResponseTextBox";
+        jsonResponseTextBox.Size = new Size(742, 204);
+        jsonResponseTextBox.TabIndex = 0;
+        jsonResponseTextBox.Text = "";
         // 
         // responseHeadersTab
         // 
@@ -408,14 +428,14 @@ partial class MainForm
         responseHeadersDataGridViewValueColumn.HeaderText = "Value";
         responseHeadersDataGridViewValueColumn.Name = "responseHeadersDataGridViewValueColumn";
         // 
-        // httpResponseResultLabel
+        // responseResultLabel
         // 
-        httpResponseResultLabel.BackColor = SystemColors.Control;
-        httpResponseResultLabel.Location = new Point(472, 10);
-        httpResponseResultLabel.Name = "httpResponseResultLabel";
-        httpResponseResultLabel.Size = new Size(294, 23);
-        httpResponseResultLabel.TabIndex = 1;
-        httpResponseResultLabel.TextAlign = ContentAlignment.MiddleRight;
+        responseResultLabel.BackColor = SystemColors.Window;
+        responseResultLabel.Location = new Point(472, 11);
+        responseResultLabel.Name = "responseResultLabel";
+        responseResultLabel.Size = new Size(294, 23);
+        responseResultLabel.TabIndex = 4;
+        responseResultLabel.TextAlign = ContentAlignment.MiddleRight;
         // 
         // groupBox3
         // 
@@ -425,7 +445,7 @@ partial class MainForm
         groupBox3.Controls.Add(requestComboBox);
         groupBox3.Controls.Add(label3);
         groupBox3.Controls.Add(label2);
-        groupBox3.Location = new Point(12, 12);
+        groupBox3.Location = new Point(10, 27);
         groupBox3.Name = "groupBox3";
         groupBox3.Size = new Size(776, 80);
         groupBox3.TabIndex = 4;
@@ -480,74 +500,122 @@ partial class MainForm
         label2.TabIndex = 0;
         label2.Text = "Collection:";
         // 
+        // menuStrip1
+        // 
+        menuStrip1.BackColor = SystemColors.Control;
+        menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+        menuStrip1.Location = new Point(0, 0);
+        menuStrip1.Name = "menuStrip1";
+        menuStrip1.Size = new Size(797, 24);
+        menuStrip1.TabIndex = 5;
+        menuStrip1.Text = "menuStrip1";
+        // 
+        // fileToolStripMenuItem
+        // 
+        fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem, exitToolStripMenuItem });
+        fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+        fileToolStripMenuItem.Size = new Size(37, 20);
+        fileToolStripMenuItem.Text = "File";
+        // 
+        // saveToolStripMenuItem
+        // 
+        saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+        saveToolStripMenuItem.Size = new Size(98, 22);
+        saveToolStripMenuItem.Text = "Save";
+        // 
+        // exitToolStripMenuItem
+        // 
+        exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+        exitToolStripMenuItem.Size = new Size(98, 22);
+        exitToolStripMenuItem.Text = "Exit";
+        // 
+        // headerConfigurationsDataGridViewEnableColumn
+        // 
+        headerConfigurationsDataGridViewEnableColumn.HeaderText = "Enable";
+        headerConfigurationsDataGridViewEnableColumn.Name = "headerConfigurationsDataGridViewEnableColumn";
+        // 
+        // headerConfigurationsDataGridViewKeyColumn
+        // 
+        headerConfigurationsDataGridViewKeyColumn.HeaderText = "Key";
+        headerConfigurationsDataGridViewKeyColumn.Name = "headerConfigurationsDataGridViewKeyColumn";
+        headerConfigurationsDataGridViewKeyColumn.ReadOnly = true;
+        // 
+        // headerConfigurationsDataGridViewValueColumn
+        // 
+        headerConfigurationsDataGridViewValueColumn.HeaderText = "Value";
+        headerConfigurationsDataGridViewValueColumn.Name = "headerConfigurationsDataGridViewValueColumn";
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(797, 731);
+        BackColor = SystemColors.Window;
+        ClientSize = new Size(797, 736);
         Controls.Add(groupBox3);
         Controls.Add(groupBox2);
         Controls.Add(groupBox1);
+        Controls.Add(menuStrip1);
+        MainMenuStrip = menuStrip1;
         Name = "MainForm";
         Text = "Restman";
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
         tabControl1.ResumeLayout(false);
         requestHeadersTab.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)requestHeadersDataGridView).EndInit();
+        ((System.ComponentModel.ISupportInitialize)headerConfigurationDataGridView).EndInit();
         requestBodyTab.ResumeLayout(false);
         requestBodyTab.PerformLayout();
-        requestBodyTabControl.ResumeLayout(false);
-        requestBodyNoneTab.ResumeLayout(false);
-        requestBodyNoneTab.PerformLayout();
-        requestBodyJsonTab.ResumeLayout(false);
+        bodyConfigurationTabControl.ResumeLayout(false);
+        noBodyTab.ResumeLayout(false);
+        noBodyTab.PerformLayout();
+        jsonConfigurationTabPage.ResumeLayout(false);
+        formDataConfigurationTab.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)formDataConfigurationDataGridView).EndInit();
         requestParamsTab.ResumeLayout(false);
-        requestParamsTab.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)requestQueryParamsDataGridView).EndInit();
+        ((System.ComponentModel.ISupportInitialize)queryParameterConfigurationsDataGridView).EndInit();
         groupBox2.ResumeLayout(false);
         tabControl2.ResumeLayout(false);
-        responseBodyTab.ResumeLayout(false);
+        jsonResponseTab.ResumeLayout(false);
         responseHeadersTab.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)responseHeadersDataGridView).EndInit();
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
+        menuStrip1.ResumeLayout(false);
+        menuStrip1.PerformLayout();
         ResumeLayout(false);
+        PerformLayout();
     }
 
     #endregion
 
     private GroupBox groupBox1;
-    private ComboBox httpMethodsComboBox;
+    private ComboBox methodsComboBox;
     private TextBox urlTextBox;
-    private Button sendHttpRequestButton;
+    private Button sendRequestButton;
     private GroupBox groupBox2;
-    private RichTextBox httpResponseTextBox;
-    private Label httpResponseResultLabel;
+    private RichTextBox jsonResponseTextBox;
+    private Label responseResultLabel;
     private TabControl tabControl1;
     private TabPage requestParamsTab;
-    private DataGridView requestQueryParamsDataGridView;
+    private DataGridView queryParameterConfigurationsDataGridView;
     private TabPage requestHeadersTab;
-    private Label queryParamsLabel;
-    private DataGridView requestHeadersDataGridView;
+    private DataGridView headerConfigurationDataGridView;
     private DataGridViewCheckBoxColumn requestQueryParamsDataGridViewEnableColumn;
     private DataGridViewTextBoxColumn requestQueryParamsDataGridViewKeyColumn;
     private DataGridViewTextBoxColumn requestQueryParamsDataGridViewValueColumn;
-    private DataGridViewCheckBoxColumn requestHeadersDataGridViewEnableColumn;
-    private DataGridViewTextBoxColumn requestHeadersDataGridViewKeyColumn;
-    private DataGridViewTextBoxColumn requestHeadersDataGridViewValueColumn;
     private TabPage requestBodyTab;
     private TabControl tabControl2;
-    private TabPage responseBodyTab;
+    private TabPage jsonResponseTab;
     private TabPage responseHeadersTab;
     private DataGridView responseHeadersDataGridView;
     private DataGridViewTextBoxColumn responseHeadersDataGridViewKeyColumn;
     private DataGridViewTextBoxColumn responseHeadersDataGridViewValueColumn;
-    private TabControl requestBodyTabControl;
-    private TabPage requestBodyNoneTab;
-    private TabPage requestBodyJsonTab;
+    private TabControl bodyConfigurationTabControl;
+    private TabPage noBodyTab;
+    private TabPage jsonConfigurationTabPage;
     private Label label1;
-    private RichTextBox requestBodyJsonTextBox;
-    private TabPage requestBodyFormDataTab;
+    private RichTextBox jsonConfigurationTextBox;
+    private TabPage formDataConfigurationTab;
     private RadioButton noRequestBodyRadioButton;
     private RadioButton jsonRequestBodyRadioButton;
     private RadioButton formDataRequestBodyRadioButton;
@@ -558,4 +626,18 @@ partial class MainForm
     private Label label2;
     private Label requestDescriptionLabel;
     private Label collectionDescriptionLabel;
+    private MenuStrip menuStrip1;
+    private ToolStripMenuItem fileToolStripMenuItem;
+    private DataGridView formDataConfigurationDataGridView;
+    private ToolStripMenuItem saveToolStripMenuItem;
+    private ToolStripMenuItem exitToolStripMenuItem;
+    private DataGridViewCheckBoxColumn requestBodyFormDataDataGridViewEnableColumn;
+    private DataGridViewComboBoxColumn requestBodyFormDataDataGridViewComboBoxColumn;
+    private DataGridViewTextBoxColumn requestBodyFormDataDataGridViewKeyColumn;
+    private DataGridViewTextBoxColumn requestBodyFormDataDataGridViewValueColumn;
+    private TabPage requestBodyNoneTab;
+    private TabPage requestBodyJsonTab;
+    private DataGridViewCheckBoxColumn headerConfigurationsDataGridViewEnableColumn;
+    private DataGridViewTextBoxColumn headerConfigurationsDataGridViewKeyColumn;
+    private DataGridViewTextBoxColumn headerConfigurationsDataGridViewValueColumn;
 }

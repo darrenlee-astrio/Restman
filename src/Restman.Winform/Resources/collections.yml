@@ -2,62 +2,61 @@
   name: Reqres
   base-url: https://reqres.in
   description: A sample api for testing
-  default-headers:
-  - key: x-api-key
-    value: "123456789"
-    enable: true
   requests:
   - name: Get Users
-    description: Gets all users from API
+    description: Gets all users
     method: GET
     end-url: /api/users
-    headers:
-      - key: x-api-key
-        value: 0987654321
-        enable: true
-      - key: x-tenant-id
-        value: astrio
-        enable: true
-    json-content: 
-  - name: Get Users With Delay
-    description: Gets all users from API with 3 seconds delay
-    method: GET
-    end-url: /api/users
-    query-params:
-      - key: delay
-        value: 3
-        enable: true
-    headers:
-    json-content: 
-  - name: Get Single User
-    description: Gets a single user by id
+    header-configurations:
+    - enable: true
+      key: x-api-key
+      value: overwrite api key
+    - enable: true
+      key: test
+      value: 1234
+    query-parameter-configurations:
+    - enable: false
+      key: delay
+      value: 3
+    json-configuration: 
+    form-data-configuration: []
+  - name: Get User
+    description: Gets single user by id
     method: GET
     end-url: /api/users/1
-    headers: 
-    json-content: 
+    header-configurations: []
+    query-parameter-configurations: []
+    json-configuration: 
+    form-data-configuration: []
   - name: Create User
     description: Creates a user
     method: POST
     end-url: /api/users
-    headers: 
-    json-content: >-
+    header-configurations: []
+    query-parameter-configurations: []
+    json-configuration: >-
       {
         "name": "morpheus",
         "job": "leader"
       }
+    form-data-configuration: []
   - name: Update User
-    description: Update a user by id
+    description: Updates a user by id
     method: PUT
     end-url: /api/users/1
-    headers: 
-    json-content: >-
+    header-configurations: []
+    query-parameter-configurations: []
+    json-configuration: >-
       {
         "name": "morpheus",
         "job": "employee"
       }
+    form-data-configuration: []
   - name: Delete User
     description: Deletes a user by id
     method: DELETE
     end-url: /api/users/1
-    headers: 
-    json-content: 
+    header-configurations: []
+    query-parameter-configurations: []
+    json-configuration: 
+    form-data-configuration: []

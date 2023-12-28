@@ -1,17 +1,7 @@
-﻿using Restman.Winform.Common.Models;
-
-namespace Restman.Winform.Common.Extensions;
+﻿namespace Restman.Winform.Common.Extensions;
 
 public static class DataGridViewExtensions
 {
-    public static Dictionary<string, string> GetDictionary(this DataGridView dataGridView, bool onlyEnabledRows = true)
-    {
-        return dataGridView.GetData<KeyValueTwinWithEnable>()
-                    .Where(x => x.Enable == onlyEnabledRows)
-                    .Select(x => new KeyValuePair<string, string>(x.Key, x.Value))
-                    .ToDictionary();
-    }
-
     public static List<T> GetData<T>(this DataGridView dataGridView)
     {
         List<T> dataList = new();

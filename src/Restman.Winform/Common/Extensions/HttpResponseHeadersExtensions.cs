@@ -1,17 +1,16 @@
-﻿using Restman.Winform.Common.Models;
+﻿using Restman.Application.Common.Models.AppData.Configuration;
 using System.Net.Http.Headers;
 
 namespace Restman.Winform.Common.Extensions;
 
 public static class HttpResponseHeadersExtensions
 {
-    public static List<KeyValueTwin> ToKeyValueTwin(this HttpResponseHeaders headers)
+    public static List<KeyValueConfiguration> ToKeyValueConfigurations(this HttpResponseHeaders headers)
     {
-        var list = new List<KeyValueTwin>();
-        foreach (var header in headers)
+        return headers.Select(x => new KeyValueConfiguration
         {
-            list.Add(new KeyValueTwin { Key = header.Key, Value = string.Join(";", header.Value) });
-        }
-        return list;
+            Key = x.Key,
+            Value = string.Join(';', x.Value)
+        }).ToList();
     }
 }

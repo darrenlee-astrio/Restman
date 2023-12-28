@@ -10,12 +10,13 @@ namespace Restman.Winform;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .Configure<HttpAppConfiguration>(configuration.GetSection("Http"))
-            .AddSingleton(sp => sp.GetRequiredService<IOptions<HttpAppConfiguration>>().Value);
-
+            .AddSingleton(sp => sp.GetRequiredService<IOptions<HttpAppConfiguration>>().Value)
+            .Configure<ResourcesConfiguration>(configuration.GetSection("Resources"))
+            .AddSingleton(sp => sp.GetRequiredService<IOptions<ResourcesConfiguration>>().Value);
         return services;
     }
 

@@ -1,10 +1,13 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Restman.Application.Common.Formatters;
-using Restman.Application.Common.Models.AppData;
+using Restman.Application.Common.Models.AppConfig;
+using Restman.Application.Common.Models.AppData.Collections;
+using Restman.Application.Common.Models.AppData.Configuration;
+using Restman.Application.Common.Models.AppData.Request;
 using Restman.Winform.Common.Extensions;
 using Restman.Winform.Common.Helpers;
-using Restman.Winform.Common.Models;
 using Restman.Winform.Common.UiExtensions;
 using Restman.Winform.Presenters;
 using Restman.Winform.Views.Interfaces;
@@ -15,11 +18,13 @@ public partial class MainForm : Form, IMainView
 {
     private readonly ILogger<MainForm> _logger;
     private readonly LogForm _logForm;
+    private readonly ResourcesConfiguration _resourcesConfiguration;
     private MainPresenter _presenter;
 
     public MainForm(
         ILogger<MainForm> logger,
         ILogger<MainPresenter> mainPresenterLogger,
+        IOptions<ResourcesConfiguration> options,
         LogForm logForm,
         IMediator mediator)
     {
@@ -27,6 +32,7 @@ public partial class MainForm : Form, IMainView
         _logForm = logForm;
         _logForm.Show();
         _presenter = new MainPresenter(this, mediator, mainPresenterLogger);
+        _resourcesConfiguration = options.Value;
 
         InitializeComponent();
         Init();
@@ -37,39 +43,76 @@ public partial class MainForm : Form, IMainView
         LoadCollections();
 
         #region Events Initialisation
-        sendHttpRequestButton.Click += (sender, e) => SendClicked?.Invoke(this, EventArgs.Empty);
-        FormClosing += (sender, e) => { _presenter.Cleanup(); };
+        sendRequestButton.Click += (sender, e) => SendClicked?.Invoke(this, EventArgs.Empty);
+        urlTextBox.KeyPress += (sender, e) => { e.Handled = true; };
         urlTextBox.TextChanged += (sender, e) => { Url = urlTextBox.Text; };
-        requestQueryParamsDataGridView.CellValueChanged += (sender, e) => { OnRequestQueryParameterChanged?.Invoke(this, EventArgs.Empty); };
-        requestQueryParamsDataGridView.CurrentCellDirtyStateChanged += (sender, e) =>
+        queryParameterConfigurationsDataGridView.CellValueChanged += (sender, e) =>
         {
-            if (requestQueryParamsDataGridView.IsCurrentCellDirty)
+            OnRequestQueryParameterChanged?.Invoke(this, EventArgs.Empty);
+        };
+        queryParameterConfigurationsDataGridView.CurrentCellDirtyStateChanged += (sender, e) =>
+        {
+            if (queryParameterConfigurationsDataGridView.IsCurrentCellDirty)
             {
-                requestQueryParamsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                queryParameterConfigurationsDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        };
+        headerConfigurationDataGridView.CellValueChanged += (sender, e) =>
+        {
+            OnHeaderConfigurationChanged?.Invoke(this, EventArgs.Empty);
+        };
+        headerConfigurationDataGridView.CurrentCellDirtyStateChanged += (sender, e) =>
+        {
+            if (headerConfigurationDataGridView.IsCurrentCellDirty)
+            {
+                headerConfigurationDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         };
 
-        requestBodyJsonTextBox.TextChanged += (sender, e) => { RequestBodyJson = requestBodyJsonTextBox.Text; };
+        jsonConfigurationTextBox.TextChanged += (sender, e) => { JsonConfiguration = jsonConfigurationTextBox.Text; };
         collectionComboBox.SelectedIndexChanged += (sender, e) => { SelectedCollectionName = collectionComboBox.Text; };
         requestComboBox.SelectedIndexChanged += (sender, e) => { SelectedRequestName = requestComboBox.Text; };
-        httpMethodsComboBox.SelectedIndexChanged += (sender, e) => { Method = httpMethodsComboBox.Text; };
-        noRequestBodyRadioButton.CheckedChanged += (sender, e) => { requestBodyTabControl.SelectedIndex = 0; };
-        jsonRequestBodyRadioButton.CheckedChanged += (sender, e) => { requestBodyTabControl.SelectedIndex = 1; };
-        formDataRequestBodyRadioButton.CheckedChanged += (sender, e) => { requestBodyTabControl.SelectedIndex = 2; };
+        methodsComboBox.SelectedIndexChanged += (sender, e) => { Method = methodsComboBox.Text; };
+        noRequestBodyRadioButton.CheckedChanged += (sender, e) => { bodyConfigurationTabControl.SelectedIndex = 0; };
+        jsonRequestBodyRadioButton.CheckedChanged += (sender, e) => { bodyConfigurationTabControl.SelectedIndex = 1; };
+        formDataRequestBodyRadioButton.CheckedChanged += (sender, e) => { bodyConfigurationTabControl.SelectedIndex = 2; };
         #endregion
 
         //httpMethodsComboBox.Initialize(HttpMethodExtensions.GetAllHttpMethods());
-        httpMethodsComboBox.Initialize(new[] { "GET", "POST", "PUT", "DELETE" });
-        requestQueryParamsDataGridView.Initialize(0.1, 0.45, 0.45);
-        requestHeadersDataGridView.Initialize(0.1, 0.45, 0.45);
+        methodsComboBox.Initialize(new[] { "GET", "POST", "PUT", "DELETE" });
+        queryParameterConfigurationsDataGridView.Initialize(0.1, 0.45, 0.45);
+        headerConfigurationDataGridView.Initialize(0.1, 0.45, 0.45);
         responseHeadersDataGridView.Initialize(0.3, 0.7);
+        bodyConfigurationTabControl.ItemSize = new Size(0, 1);
+        bodyConfigurationTabControl.SizeMode = TabSizeMode.Fixed;
+
+        saveToolStripMenuItem.Click += (sender, e) => { SaveChanges(); };
+        exitToolStripMenuItem.Click += (sender, e) => { this.Close(); };
+        FormClosing += (sender, e) =>
+        {
+            _presenter.Cleanup();
+
+            if (HasUnsavedChanges)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save changes before closing?", "Unsaved Changes", MessageBoxButtons.YesNoCancel);
+
+                if (result == DialogResult.Yes)
+                {
+                    SaveChanges();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        };
     }
 
     private void LoadCollections()
     {
         try
         {
-            Collections = YamlHelper.Deserialize<List<RequestCollection>>("Resources\\collections.yml");
+            Collections = YamlHelper.Deserialize<List<RequestCollection>>(_resourcesConfiguration.CollectionsFilePath);
         }
         catch (Exception ex)
         {
@@ -79,8 +122,33 @@ public partial class MainForm : Form, IMainView
         }
     }
 
-    #region Properties
+    private void SaveChanges()
+    {
+        try
+        {
+            var selectedCollectionIndex = Collections.FindIndex(x => x.Name == SelectedCollection.Name);
+            var selectedRequestIndex = SelectedCollection.Requests.FindIndex(x => x.Name == SelectedRequest.Name);
 
+            SelectedCollection.Requests[selectedRequestIndex] = SelectedRequest;
+            Collections[selectedCollectionIndex] = SelectedCollection;
+
+            string yaml = YamlHelper.Serialize(Collections);
+            File.WriteAllText(_resourcesConfiguration.CollectionsFilePath, yaml);
+
+            SavedQueryParameterConfigurations = QueryParameterConfigurations;
+            SavedHeaderConfigurations = HeaderConfigurations;
+            SavedJsonConfiguration = JsonConfiguration;
+            SavedFormDataConfigurations = FormDataConfigurations;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred when saving collections.");
+            MessageBox.Show($"An error occurred when loading collections. \n\n{ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(1);
+        }
+    }
+
+    #region IMainView Properties
     private List<RequestCollection> _collections = new();
     private List<RequestItem> _requests = new();
     private RequestCollection _selectedCollection = new();
@@ -89,7 +157,46 @@ public partial class MainForm : Form, IMainView
     private bool _isRequestSending = false;
     private bool _isRequestCompleted = false;
 
+    private List<HeaderConfiguration> _savedHeaderConfigurations = new();
+    private List<QueryParameterConfiguration> _savedQueryParameterConfigurations = new();
+    private string _savedJsonConfiguration = string.Empty;
+    private List<FormDataConfiguration> _savedFormDataConfiguration = new();
 
+    public bool HasUnsavedChanges
+    {
+        get
+        {
+            return HeaderConfigurationsChanged
+                || QueryParameterConfigurationsChanged
+                || JsonConfigurationChanged
+                || FormDataConfigurationChanged;
+        }
+    }
+    public bool HeaderConfigurationsChanged { get => !SavedHeaderConfigurations.SequenceEqual(HeaderConfigurations); }
+    public bool QueryParameterConfigurationsChanged { get => !SavedQueryParameterConfigurations.SequenceEqual(QueryParameterConfigurations); }
+    public bool JsonConfigurationChanged { get => !SavedJsonConfiguration.Equals(JsonConfiguration); }
+    public bool FormDataConfigurationChanged { get => !SavedFormDataConfigurations.SequenceEqual(FormDataConfigurations); }
+
+    public List<QueryParameterConfiguration> SavedQueryParameterConfigurations
+    {
+        get { return _savedQueryParameterConfigurations; }
+        set { _savedQueryParameterConfigurations = new List<QueryParameterConfiguration>(value); }
+    }
+    public List<HeaderConfiguration> SavedHeaderConfigurations
+    {
+        get { return _savedHeaderConfigurations; }
+        set { _savedHeaderConfigurations = new List<HeaderConfiguration>(value); }
+    }
+    public string SavedJsonConfiguration
+    {
+        get { return _savedJsonConfiguration; }
+        set { _savedJsonConfiguration = value; }
+    }
+    public List<FormDataConfiguration> SavedFormDataConfigurations
+    {
+        get { return _savedFormDataConfiguration; }
+        set { _savedFormDataConfiguration = new List<FormDataConfiguration>(value); }
+    }
     public List<RequestCollection> Collections
     {
         get { return _collections; }
@@ -115,7 +222,6 @@ public partial class MainForm : Form, IMainView
         set
         {
             _selectedCollection = value;
-
         }
     }
     public RequestItem SelectedRequest
@@ -183,10 +289,10 @@ public partial class MainForm : Form, IMainView
     }
     public string Method
     {
-        get => httpMethodsComboBox.Text;
+        get => methodsComboBox.Text;
         set
         {
-            httpMethodsComboBox.InvokeIfRequired(comboBox => comboBox.SelectedIndex = httpMethodsComboBox.FindString(value));
+            methodsComboBox.InvokeIfRequired(comboBox => comboBox.SelectedIndex = methodsComboBox.FindString(value));
             OnRequestMethodChanged?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -199,37 +305,52 @@ public partial class MainForm : Form, IMainView
     {
         get { return UrlFormatter.Combine(SelectedCollection.BaseUrl, SelectedRequest.EndUrl); }
     }
-    public string? Content
+    public List<QueryParameterConfiguration> QueryParameterConfigurations
     {
-        get { return requestBodyJsonTextBox.Text; }
-        set { requestBodyJsonTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
-    }
-    public List<KeyValueTwinWithEnable> RequestQueryParameters
-    {
-        get { return requestQueryParamsDataGridView.GetData<KeyValueTwinWithEnable>(); }
+        get { return queryParameterConfigurationsDataGridView.GetData<QueryParameterConfiguration>(); }
         set
         {
-            requestQueryParamsDataGridView.InvokeIfRequired(gridView =>
+            queryParameterConfigurationsDataGridView.InvokeIfRequired(gridView =>
             {
                 gridView.Rows.Clear();
-                foreach (KeyValueTwinWithEnable row in value)
+                foreach (QueryParameterConfiguration row in value)
                 {
                     gridView.Rows.Add(row.Enable, row.Key, row.Value);
                 }
             });
+            SelectedRequest.QueryParameterConfigurations = value;
         }
     }
-    public List<KeyValueTwinWithEnable> RequestHeaders
+    public List<HeaderConfiguration> HeaderConfigurations
     {
-        get { return requestHeadersDataGridView.GetData<KeyValueTwinWithEnable>(); }
+        get
+        {
+            return headerConfigurationDataGridView.GetData<HeaderConfiguration>();
+        }
         set
         {
-            requestHeadersDataGridView.InvokeIfRequired(gridView =>
+            headerConfigurationDataGridView.InvokeIfRequired(gridView =>
             {
                 gridView.Rows.Clear();
-                foreach (KeyValueTwinWithEnable row in value)
+                foreach (HeaderConfiguration row in value)
                 {
                     gridView.Rows.Add(row.Enable, row.Key, row.Value);
+                }
+            });
+            SelectedRequest.HeaderConfigurations = value;
+        }
+    }
+    public List<FormDataConfiguration> FormDataConfigurations
+    {
+        get { return formDataConfigurationDataGridView.GetData<FormDataConfiguration>(); }
+        set
+        {
+            formDataConfigurationDataGridView.InvokeIfRequired(gridView =>
+            {
+                gridView.Rows.Clear();
+                foreach (FormDataConfiguration row in value)
+                {
+                    gridView.Rows.Add(row.Enable, row.Type, row.Key, row.Value);
                 }
             });
         }
@@ -285,30 +406,34 @@ public partial class MainForm : Form, IMainView
             }
         }
     }
-    public string? RequestBodyJson
+    public string JsonConfiguration
     {
-        get { return requestBodyJsonTextBox.Text; }
-        set { requestBodyJsonTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
+        get { return jsonConfigurationTextBox.Text; }
+        set
+        {
+            jsonConfigurationTextBox.InvokeIfRequired(textBox => textBox.Text = value);
+            SelectedRequest.JsonConfiguration = value;
+        }
     }
     public string Result
     {
-        get { return httpResponseResultLabel.Text; }
-        set { httpResponseResultLabel.InvokeIfRequired(textBox => textBox.Text = value); }
+        get { return responseResultLabel.Text; }
+        set { responseResultLabel.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-    public string? ResponseBodyJson
+    public string? JsonResponse
     {
-        get { return httpResponseTextBox.Text; }
-        set { httpResponseTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
+        get { return jsonResponseTextBox.Text; }
+        set { jsonResponseTextBox.InvokeIfRequired(textBox => textBox.Text = value); }
     }
-    public List<KeyValueTwin> ResponseHeaders
+    public List<KeyValueConfiguration> ResponseHeaders
     {
-        get { return responseHeadersDataGridView.GetData<KeyValueTwin>(); }
+        get { return responseHeadersDataGridView.GetData<KeyValueConfiguration>(); }
         set
         {
             responseHeadersDataGridView.InvokeIfRequired(gridView =>
             {
                 gridView.Rows.Clear();
-                foreach (KeyValueTwin row in value)
+                foreach (KeyValueConfiguration row in value)
                 {
                     gridView.Rows.Add(row.Key, row.Value);
                 }
@@ -343,8 +468,8 @@ public partial class MainForm : Form, IMainView
     }
     public string SendHttpRequestButtonText
     {
-        get { return sendHttpRequestButton.Text; }
-        set { sendHttpRequestButton.InvokeIfRequired(button => button.Text = value); }
+        get { return sendRequestButton.Text; }
+        set { sendRequestButton.InvokeIfRequired(button => button.Text = value); }
     }
     #endregion
 
@@ -355,6 +480,8 @@ public partial class MainForm : Form, IMainView
     public event EventHandler? OnRequestMethodChanged;
     public event EventHandler? OnRequestBodyTypeChanged;
     public event EventHandler? OnRequestQueryParameterChanged;
+    public event EventHandler? OnHeaderConfigurationChanged;
+
     public event EventHandler? OnRequestSending;
     public event EventHandler? OnRequestCompleted;
     public event EventHandler? SendClicked;
